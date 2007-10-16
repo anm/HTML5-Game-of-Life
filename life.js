@@ -113,7 +113,13 @@ function tick(grid, temp) {
     
     for(y=0; y<numRows; y++) {
 	for(x=0; x<numColumns; x++) {
-	    grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString();
+	    if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor == "rgb(0, f, 0)" ){ grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#000"; }
+            if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor != temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString()) {
+                if (temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() == "rgb(0, 0, 0)") {
+		    grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#00ff00";
+		} else
+		{ grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = rgb(0,0,0); }
+            }
 	}
     }
 }
@@ -139,7 +145,7 @@ function area_sum(grid, point_x, point_y) {
 //	    alert( typeof cell);
 
 
-	    sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)") ? 1 : 0;
+	    sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" || (cell.style.backgroundColor.toString() == "rgb(0, f, 0)") ) ? 1 : 0;
 	}
     }
     
@@ -147,7 +153,7 @@ function area_sum(grid, point_x, point_y) {
     row = point_y;
     for (column = (point_x -1); column <= (point_x +1); column += 2) {
 	var cell = table_body.childNodes[row].childNodes[column];
-	sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)") ? 1 : 0;
+	sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" || (cell.style.backgroundColor.toString() == "rgb(0, f, 0)") ) ? 1 : 0;
     }
     return sum;
 }
