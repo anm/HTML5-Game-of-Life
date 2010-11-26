@@ -1,5 +1,6 @@
 var numRows = 30;
 var numColumns = 30;
+var generation = 0;
 
 function curry(method) {
     var curried = [];
@@ -31,6 +32,7 @@ function Clock(func, period) {
     this.start = Clock_start;
     this.stop = Clock_stop;
 }
+
 function Clock_start() {
     var job = this.func; // This is required to get around namespace problem.
                          // If didn't do this then this.method actually referes to window.method, or at least some object that we don't want - I think window.
@@ -54,7 +56,6 @@ function Clock_stop() {
 }
 
 function init() {
-    
     var body = document.getElementsByTagName("body")[0];	
     
     var button = document.createElement('button');	
@@ -75,7 +76,11 @@ function init() {
     var display = make_table('1', numRows, numColumns);
     if (display == null) { alert("Error: Could not make table"); }
     var working = make_table('2', numRows, numColumns);		
-    working.style.display = "none"; // Does not display the table. It does not use any space in the browser window - contrast visibility which uses space
+
+    working.style.display = "none"; // Does not display the table. It
+                                    // does not use any space in the
+                                    // browser window - contrast
+                                    // visibility which uses space
 
     var tick_curry = curry(tick, display, working);
 
@@ -88,6 +93,8 @@ function init() {
 
     body.appendChild(stopped);
     
+    
+    
     start.onclick = function() { clock.start(); body.removeChild(stopped); body.appendChild(running); };
     stop.onclick  = function() { clock.stop(); body.removeChild(running); body.appendChild(stopped);  };
     button.onclick = tick_curry;
@@ -99,8 +106,8 @@ function tick(grid, temp) {
     var temp_tbody = temp.getElementsByTagName("tbody")[0];
     var grid_tbody = grid.getElementsByTagName("tbody")[0];
     var y, x;
-    for (y=1; y< numRows -1; y++) {
-	for (x=1; x < numColumns -1; x++) {
+    for (y = 1; y < numRows - 1; y++) {
+	for (x = 1; x < numColumns - 1; x++) {
 	    var sum = area_sum(grid, x, y);
 	    if (sum < 2 || sum > 4) { // Die of lonelyness or overcrowding
 		temp_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#fff";
@@ -109,21 +116,27 @@ function tick(grid, temp) {
 	    }
 	}
     }
+
     // Copy temp to grid
-    
-    for(y=0; y<numRows; y++) {
-	for(x=0; x<numColumns; x++) {
-	    if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor == "rgb(0, f, 0)" ){ grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#000"; }
-            if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor != temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString()) {
-                if (temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() == "rgb(0, 0, 0)") {
+    // Newly alive cells are green
+    for (y = 0; y < numRows; y++) {
+	for (x = 0; x < numColumns; x++) {
+	    if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() == "rgb(0, 255, 0)" ) {
+                grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#000";
+            }
+            
+            if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() !=
+                temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString()) {
+                if (temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() ==
+                    "rgb(0, 0, 0)") {
 		    grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#00ff00";
-		} else
-		{ grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = rgb(0,0,0); }
+		} else {
+                    grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = '#fff';
+                }
             }
 	}
     }
 }
-
 
 function area_sum(grid, point_x, point_y) {
   //  alert("Called area sum on:" + point_x + ", " + point_y );
@@ -144,16 +157,17 @@ function area_sum(grid, point_x, point_y) {
 
 //	    alert( typeof cell);
 
-
-	    sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" || (cell.style.backgroundColor.toString() == "rgb(0, f, 0)") ) ? 1 : 0;
+	    sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" ||
+                    (cell.style.backgroundColor.toString() == "rgb(0, 255, 0)") ) ? 1 : 0;
 	}
     }
     
-//    alert("done first part");
+    //    alert("done first part");
     row = point_y;
     for (column = (point_x -1); column <= (point_x +1); column += 2) {
 	var cell = table_body.childNodes[row].childNodes[column];
-	sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" || (cell.style.backgroundColor.toString() == "rgb(0, f, 0)") ) ? 1 : 0;
+	sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" ||
+                (cell.style.backgroundColor.toString() == "rgb(0, 255, 0)") ) ? 1 : 0;
     }
     return sum;
 }
@@ -188,10 +202,10 @@ function make_table(id, numRows, numColumns) {
 }
 
 function toggle_cell() {
-	cell = this;
-	if (cell.style.backgroundColor.toString() == "rgb(255, 255, 255)") {
-		cell.style.backgroundColor = "#000";
-	} else {
-		cell.style.backgroundColor = "#fff";
-	}
+    cell = this;
+    if (cell.style.backgroundColor.toString() == "rgb(255, 255, 255)") {
+	cell.style.backgroundColor = "#000";
+    } else {
+	cell.style.backgroundColor = "#fff";
+    }
 }
