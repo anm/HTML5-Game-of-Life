@@ -121,19 +121,37 @@ function nextGeneration(grid) {
     for (var y = 1; y < grid.numRows - 1; y++) {
 	for (var x = 1; x < grid.numColumns - 1; x++) {
 	    var sum = area_sum(grid, x, y);
-	    if (sum < 2 || sum > 4) { // Die of lonelyness or overcrowding
-		ng[x][y] = 0;
-	    } else { // Stay alive / be born
 
+
+            var prev = grid[x][y] || 0;
+            if (live_p(prev, sum)) {
                 // Add one to the survival time but stop at a max
                 // limit to avoid rollover.
-                var prev = grid[x][y] || 0;
 		ng[x][y] = prev < 10 ? prev + 1 : prev;
-	    }
+            } else {
+		ng[x][y] = 0;
+            }
         }
     }
-    
     return ng;
+}
+
+/* Take the generation number of a cell and the number of neighbours it has.
+   * Return true if the cell is to live in the next generation.
+*/
+function live_p(generation, count) {
+    if (generation) {
+        // If alive
+        if (count == 2 || count == 3) {
+            // Stay alive
+            return true;
+        }
+    } else {
+        if (count == 3) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function display(grid) {
