@@ -55,6 +55,22 @@ function Clock_stop() {
     }
 }
 
+Grid.prototype = new Array(); // Inherit from Array
+Grid.prototype.constructor = Grid; // Set the "class" back to Grid
+
+// The constructor
+function Grid(numRows, numColumns) {
+    this.numRows    = numRows;
+    this.numColumns = numColumns;
+
+    this.length = numColumns;
+    for (var x = 0; x < numColumns; ++x) {
+        this[x] = new Array(numRows);
+    }
+}
+
+var grid = new Grid(numRows, numColumns);
+
 function init() {
     var body = document.getElementsByTagName("body")[0];	
     
@@ -73,18 +89,10 @@ function init() {
     
 //    var speed = document.createElement('text');
 
-    var display = make_table('1', numRows, numColumns);
-    if (display == null) { alert("Error: Could not make table"); }
-    var working = make_table('2', numRows, numColumns);		
+    var display = make_table('1', grid);
+    var tick_curry = curry(tick, grid);
 
-    working.style.display = "none"; // Does not display the table. It
-                                    // does not use any space in the
-                                    // browser window - contrast
-                                    // visibility which uses space
-
-    var tick_curry = curry(tick, display, working);
-
-    clock = new Clock(tick_curry, 500);
+    clock = new Clock("grid = tick(grid)", 500);
     
     var stopped = document.createTextNode("Stopped");
     stopped.id = "stopped";
@@ -93,99 +101,116 @@ function init() {
 
     body.appendChild(stopped);
     
-    
-    
-    start.onclick = function() { clock.start(); body.removeChild(stopped); body.appendChild(running); };
-    stop.onclick  = function() { clock.stop(); body.removeChild(running); body.appendChild(stopped);  };
-    button.onclick = tick_curry;
+    start.onclick = function() { clock.start();
+                                 body.removeChild(stopped);
+                                 body.appendChild(running); };
+
+    stop.onclick  = function() { clock.stop();
+                                 body.removeChild(running);
+                                 body.appendChild(stopped);  };
+
+    button.onclick = "grid = tick(grid)";
 }
 
-function tick(grid, temp) {
-    // Calculate the next generation and create updated grid table
+/* Takes a Grid.
+ * Returns a Grid for the next generation of the supplied Grid.
+ */
+function nextGeneration(grid) {
+    var ng = new Grid(grid.numRows, grid.numColumns);
 
-    var temp_tbody = temp.getElementsByTagName("tbody")[0];
-    var grid_tbody = grid.getElementsByTagName("tbody")[0];
-    var y, x;
-    for (y = 1; y < numRows - 1; y++) {
-	for (x = 1; x < numColumns - 1; x++) {
+    for (var y = 1; y < grid.numRows - 1; y++) {
+	for (var x = 1; x < grid.numColumns - 1; x++) {
 	    var sum = area_sum(grid, x, y);
 	    if (sum < 2 || sum > 4) { // Die of lonelyness or overcrowding
-		temp_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#fff";
+		ng[x][y] = 0;
 	    } else { // Stay alive / be born
-		temp_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#000";
-	    }
-	}
-    }
 
-    // Copy temp to grid
-    // Newly alive cells are green
-    for (y = 0; y < numRows; y++) {
-	for (x = 0; x < numColumns; x++) {
-	    if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() == "rgb(0, 255, 0)" ) {
-                grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#000";
+                // Add one to the survival time but stop at a max
+                // limit to avoid rollover.
+                var prev = grid[x][y];
+		ng[x][y] = prev < 10 ? prev + 1 : prev;
+	    }
+        }
+    }
+    
+    return ng;
+}
+
+function display(grid) {
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+
+    for (var y = 0; y < grid.numRows; y++) {
+	for (var x = 0; x < grid.numColumns; x++) {
+            if (grid[x][y]) {
+                grid_tbody.childNodes[y].childNodes[x]
+                    .style.backgroundColor = '#000';
+            } else {
+                grid_tbody.childNodes[y].childNodes[x]
+                    .style.backgroundColor = '#fff';
             }
-            
-            if (grid_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() !=
-                temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString()) {
-                if (temp_tbody.childNodes[y].childNodes[x].style.backgroundColor.toString() ==
-                    "rgb(0, 0, 0)") {
-		    grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = "#00ff00";
-		} else {
-                    grid_tbody.childNodes[y].childNodes[x].style.backgroundColor = '#fff';
-                }
-            }
-	}
+        }
     }
 }
 
-function area_sum(grid, point_x, point_y) {
-  //  alert("Called area sum on:" + point_x + ", " + point_y );
-    // Return the sum of black (alive) cells that surround the given point
+/* Compute and display the next generation of grid. */
+function tick(grid) {
+    grid = nextGeneration(grid);
+    display(grid);
+    return grid;
+}
 
-    var table_body = grid.getElementsByTagName("tbody")[0];
+/* Return the number of living cells that surround the given point
+ */
+function area_sum(grid, point_x, point_y) {
     var sum = 0;
     var row;
     var column;
 
-    //alert( table_body );
-    for (row = (point_y -1); row <= point_y + 1; row = row + 2) {
-	for (column = (point_x -1); column <= (point_x + 1); column++) {
-	    if( row < 0 || column < 0 || row == numRows || column == numColumns) {
+    // The three cells in the rows above and below the given cell
+    for (row = point_y - 1; row <= point_y + 1; row = row + 2) {
+	for (column = point_x - 1; column <= (point_x + 1); column++) {
+	    if( row < 0        || column < 0 ||
+                row == numRows || column == numColumns) {
+                // Off the edge
 		alert(row + " " +  column);
 	    }
-	    var cell = table_body.childNodes[row].childNodes[column];
 
-//	    alert( typeof cell);
-
-	    sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" ||
-                    (cell.style.backgroundColor.toString() == "rgb(0, 255, 0)") ) ? 1 : 0;
-	}
+            if (grid[row][column]) {
+                ++sum;
+            }
+        }
     }
-    
-    //    alert("done first part");
+        
+    // The two cells to either side of the given cell
     row = point_y;
-    for (column = (point_x -1); column <= (point_x +1); column += 2) {
-	var cell = table_body.childNodes[row].childNodes[column];
-	sum += (cell.style.backgroundColor.toString() == "rgb(0, 0, 0)" ||
-                (cell.style.backgroundColor.toString() == "rgb(0, 255, 0)") ) ? 1 : 0;
+    for (column = point_x - 1; column <= (point_x + 1); column += 2) {
+        if (grid[row][column]) { 
+            ++sum;
+        }
     }
     return sum;
 }
 
-
-function make_table(id, numRows, numColumns) {
+function make_table(id, grid) {
     var body = document.getElementsByTagName("body")[0];
     
     // Build the tables
     var tbl     = document.createElement("table");
     var tblBody = document.createElement("tbody");
     
-    for (i = 0; i < numRows; i++) {
+    for (var y = 0; y < grid.numRows; y++) {
 	var row = document.createElement("tr");
-	for (j = 0; j < numColumns; ++j) {
+	for (var x = 0; x < grid.numColumns; ++x) {
 	    var cell = document.createElement("td");
 	    cell.style.backgroundColor = "#fff";
-	    cell.onclick = toggle_cell;
+            (function () {var my_x = x;
+                          var my_y = y;
+
+	                  cell.onclick = function(){
+                              toggle_cell(my_x,my_y)
+                          };})();
+
 	    row.appendChild(cell);
 	}
 	tblBody.appendChild(row);
@@ -201,11 +226,11 @@ function make_table(id, numRows, numColumns) {
     return tbl;
 }
 
-function toggle_cell() {
-    cell = this;
-    if (cell.style.backgroundColor.toString() == "rgb(255, 255, 255)") {
-	cell.style.backgroundColor = "#000";
+function toggle_cell(x, y) {
+    if (grid[x][y]) {
+        grid[x][y] = 0;
     } else {
-	cell.style.backgroundColor = "#fff";
+        grid[x][y] = 1;
     }
+    display(grid);
 }
