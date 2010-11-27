@@ -59,9 +59,9 @@ Grid.prototype = new Array(); // Inherit from Array
 Grid.prototype.constructor = Grid; // Set the "class" back to Grid
 
 // The constructor
-function Grid(numRows, numColumns) {
-    this.numRows    = numRows;
+function Grid(numColumns, numRows) {
     this.numColumns = numColumns;
+    this.numRows    = numRows;
 
     this.length = numColumns;
     for (var x = 0; x < numColumns; ++x) {
@@ -69,7 +69,7 @@ function Grid(numRows, numColumns) {
     }
 }
 
-var grid = new Grid(numRows, numColumns);
+var grid = new Grid(numColumns, numRows);
 
 function init() {
     var body = document.getElementsByTagName("body")[0];	
@@ -92,7 +92,7 @@ function init() {
     var display = make_table('1', grid);
     var tick_curry = curry(tick, grid);
 
-    clock = new Clock("grid = tick(grid)", 500);
+    clock = new Clock(tick, 500);
     
     var stopped = document.createTextNode("Stopped");
     stopped.id = "stopped";
@@ -109,7 +109,7 @@ function init() {
                                  body.removeChild(running);
                                  body.appendChild(stopped);  };
 
-    button.onclick = "grid = tick(grid)";
+    button.onclick = tick;
 }
 
 /* Takes a Grid.
@@ -127,7 +127,7 @@ function nextGeneration(grid) {
 
                 // Add one to the survival time but stop at a max
                 // limit to avoid rollover.
-                var prev = grid[x][y];
+                var prev = grid[x][y] || 0;
 		ng[x][y] = prev < 10 ? prev + 1 : prev;
 	    }
         }
@@ -140,8 +140,8 @@ function display(grid) {
     var table = document.getElementById("1");
     var grid_tbody = table.getElementsByTagName("tbody")[0];
 
-    for (var y = 0; y < grid.numRows; y++) {
-	for (var x = 0; x < grid.numColumns; x++) {
+    for (var x = 0; x < grid.numColumns; x++) {
+        for (var y = 0; y < grid.numRows; y++) {
             if (grid[x][y]) {
                 grid_tbody.childNodes[y].childNodes[x]
                     .style.backgroundColor = '#000';
@@ -154,10 +154,9 @@ function display(grid) {
 }
 
 /* Compute and display the next generation of grid. */
-function tick(grid) {
+function tick() {
     grid = nextGeneration(grid);
     display(grid);
-    return grid;
 }
 
 /* Return the number of living cells that surround the given point
@@ -171,12 +170,12 @@ function area_sum(grid, point_x, point_y) {
     for (row = point_y - 1; row <= point_y + 1; row = row + 2) {
 	for (column = point_x - 1; column <= (point_x + 1); column++) {
 	    if( row < 0        || column < 0 ||
-                row == numRows || column == numColumns) {
+                row == grid.numRows || column == grid.numColumns) {
                 // Off the edge
 		alert(row + " " +  column);
 	    }
 
-            if (grid[row][column]) {
+            if (grid[column][row]) {
                 ++sum;
             }
         }
@@ -185,7 +184,7 @@ function area_sum(grid, point_x, point_y) {
     // The two cells to either side of the given cell
     row = point_y;
     for (column = point_x - 1; column <= (point_x + 1); column += 2) {
-        if (grid[row][column]) { 
+        if (grid[column][row]) { 
             ++sum;
         }
     }
