@@ -86,7 +86,15 @@ function init() {
     var stop = document.createElement('button');	
     stop.appendChild(document.createTextNode('Stop'));
     body.appendChild(stop);
-    
+
+    var gen_text = document.createElement('div');
+    gen_text.id = 'generationLabel';
+    gen_text.appendChild(document.createTextNode('Generation: '));
+    var gen = document.createElement('span');
+    gen_text.appendChild(gen);
+    gen.id = 'generation';
+    body.appendChild(gen_text);
+
 //    var speed = document.createElement('text');
 
     var display = make_table('1', grid);
@@ -110,6 +118,10 @@ function init() {
                                  body.appendChild(stopped);  };
 
     button.onclick = tick;
+}
+
+function show_generation() {
+    document.getElementById('generation').innerHTML = generation;
 }
 
 /* Takes a Grid.
@@ -175,6 +187,8 @@ function display(grid) {
 function tick() {
     grid = nextGeneration(grid);
     display(grid);
+    ++generation;
+    show_generation();
 }
 
 /* Return the number of living cells that surround the given point
