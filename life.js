@@ -144,10 +144,10 @@ function display(grid) {
         for (var y = 0; y < grid.numRows; y++) {
             if (grid[x][y]) {
                 grid_tbody.childNodes[y].childNodes[x]
-                    .style.backgroundColor = '#000';
+                    .className = "live " + "g" + grid[x][y];
             } else {
                 grid_tbody.childNodes[y].childNodes[x]
-                    .style.backgroundColor = '#fff';
+                    .className = "dead";
             }
         }
     }
@@ -202,7 +202,7 @@ function make_table(id, grid) {
 	var row = document.createElement("tr");
 	for (var x = 0; x < grid.numColumns; ++x) {
 	    var cell = document.createElement("td");
-	    cell.style.backgroundColor = "#fff";
+	    cell.className = "dead";
             (function () {var my_x = x;
                           var my_y = y;
 
