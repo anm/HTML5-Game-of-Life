@@ -41,6 +41,7 @@ function Clock(func, period) {
     };
 }
 
+/* Grid Class */
 Grid.prototype = new Array(); // Inherit from Array
 Grid.prototype.constructor = Grid; // Set the "class" back to Grid
 
@@ -56,22 +57,44 @@ function Grid(numColumns, numRows) {
 }
 
 var grid = new Grid(numColumns, numRows);
+var period = 100;
+var clock = new Clock(tick, period);
 
-function init() {
-    var body = document.getElementsByTagName("body")[0];	
+window.onload = load;
+
+function load() {
+    make_ui();
+}
+
+function reset() {
+    clock.stop();
+    generation = 0;
+    show_generation();
+    grid = new Grid(numColumns, numRows);
+    display(grid);
+}
+
+function make_ui() {
+    var body = document.getElementsByTagName("body")[0];        
+    body.innerHTML = '';
     
-    var button = document.createElement('button');	
-    var label = document.createTextNode('Tick');
-    button.appendChild(label);
-    body.appendChild(button);
+    var tick = document.createElement('button');      
+    tick.appendChild(document.createTextNode('Tick'));
+    body.appendChild(tick);
+    tick.onclick = this.tick;
 
-    var start = document.createElement('button');	
+    var start = document.createElement('button');       
     start.appendChild(document.createTextNode('Start'));
     body.appendChild(start);
 
-    var stop = document.createElement('button');	
+    var stop = document.createElement('button');        
     stop.appendChild(document.createTextNode('Stop'));
     body.appendChild(stop);
+
+    var reset = document.createElement('button');
+    reset.appendChild(document.createTextNode('Reset'));
+    reset.onclick = this.reset;
+    body.appendChild(reset);
 
     var gen_text = document.createElement('div');
     gen_text.id = 'generationLabel';
@@ -80,30 +103,25 @@ function init() {
     gen_text.appendChild(gen);
     gen.id = 'generation';
     body.appendChild(gen_text);
+    show_generation();
 
-//    var speed = document.createElement('text');
+    var grid_div = document.createElement('div');
+    grid_div.id = 'grid';
+    body.appendChild(grid_div);
 
-    var display = make_table('1', grid);
-    var tick_curry = curry(tick, grid);
-
-    clock = new Clock(tick, 500);
+    var table = make_table('1', grid);
+    grid_div.appendChild(table);
     
-    var stopped = document.createTextNode("Stopped");
-    stopped.id = "stopped";
-    var running = document.createTextNode("Running");
-    running.id = "Running"
-
-    body.appendChild(stopped);
+    var status = document.createElement('div');
+    status.id = 'status';
+    status.innerHTML = 'Stopped';
+    body.appendChild(status);
     
     start.onclick = function() { clock.start();
-                                 body.removeChild(stopped);
-                                 body.appendChild(running); };
+                                 status.innerHTML = 'Running';}
 
     stop.onclick  = function() { clock.stop();
-                                 body.removeChild(running);
-                                 body.appendChild(stopped);  };
-
-    button.onclick = tick;
+                                 status.innerHTML = 'Stopped';}
 }
 
 function show_generation() {
@@ -117,17 +135,17 @@ function nextGeneration(grid) {
     var ng = new Grid(grid.numRows, grid.numColumns);
 
     for (var y = 1; y < grid.numRows - 1; y++) {
-	for (var x = 1; x < grid.numColumns - 1; x++) {
-	    var sum = area_sum(grid, x, y);
+        for (var x = 1; x < grid.numColumns - 1; x++) {
+            var sum = area_sum(grid, x, y);
 
 
             var prev = grid[x][y] || 0;
             if (live_p(prev, sum)) {
                 // Add one to the survival time but stop at a max
                 // limit to avoid rollover.
-		ng[x][y] = prev < 10 ? prev + 1 : prev;
+                ng[x][y] = prev < 10 ? prev + 1 : prev;
             } else {
-		ng[x][y] = 0;
+                ng[x][y] = 0;
             }
         }
     }
@@ -186,12 +204,12 @@ function area_sum(grid, point_x, point_y) {
 
     // The three cells in the rows above and below the given cell
     for (row = point_y - 1; row <= point_y + 1; row = row + 2) {
-	for (column = point_x - 1; column <= (point_x + 1); column++) {
-	    if( row < 0        || column < 0 ||
+        for (column = point_x - 1; column <= (point_x + 1); column++) {
+            if( row < 0        || column < 0 ||
                 row == grid.numRows || column == grid.numColumns) {
                 // Off the edge
-		alert(row + " " +  column);
-	    }
+                alert(row + " " +  column);
+            }
 
             if (grid[column][row]) {
                 ++sum;
@@ -210,30 +228,33 @@ function area_sum(grid, point_x, point_y) {
 }
 
 function make_table(id, grid) {
-    var body = document.getElementsByTagName("body")[0];
-    
-    // Build the tables
+    // Build the table
     var tbl     = document.createElement("table");
     var tblBody = document.createElement("tbody");
     
     for (var y = 0; y < grid.numRows; y++) {
-	var row = document.createElement("tr");
-	for (var x = 0; x < grid.numColumns; ++x) {
-	    var cell = document.createElement("td");
-	    cell.className = "dead";
+        var row = document.createElement("tr");
+        for (var x = 0; x < grid.numColumns; ++x) {
+            var cell = document.createElement("td");
+
+            if (grid[x][y]) {
+                cell.className = "live " + "g" + grid[x][y];
+            } else {
+                cell.className = "dead";
+            }
+
             (function () {var my_x = x;
                           var my_y = y;
 
-	                  cell.onclick = function(){
+                          cell.onclick = function(){
                               toggle_cell(my_x,my_y)
                           };})();
 
-	    row.appendChild(cell);
-	}
-	tblBody.appendChild(row);
+            row.appendChild(cell);
+        }
+        tblBody.appendChild(row);
     }
     tbl.appendChild(tblBody);
-    body.appendChild(tbl);
     
     tbl.setAttribute("border", "2");
     tbl.setAttribute("rules", "all");
