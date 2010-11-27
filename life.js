@@ -19,40 +19,26 @@ function curry(method) {
     }
 }
 
+/* A clock in the electronics sense.
+* Calls func every period ms.
+*/
 function Clock(func, period) {
-    // Constructor for Clock "Class"
-
-    // Private
-    this.timer = "";
+    this.timer = null;
     this.func = func;
-
-    // Public
     this.period = period;
 
-    this.start = Clock_start;
-    this.stop = Clock_stop;
-}
+    this.start = function () {
+        if (this.timer === null) {
+            this.timer = setInterval(this.func, this.period);
+        }
+    };
 
-function Clock_start() {
-    var job = this.func; // This is required to get around namespace problem.
-                         // If didn't do this then this.method actually referes to window.method, or at least some object that we don't want - I think window.
-
-    if (this.timer == "") {
-	this.timer = setInterval(job, this.period);
-//	alert("Clock started. Period: " + this.period);
-    }
-    else {
-	// Timer has been started already
-	// alert( "Timer already started");
-    }
-}
-
-function Clock_stop() {
-    if (this.timer != "") {
-	clearTimeout(this.timer);
-	this.timer = "";
-	//    alert("Clock stopped");    
-    }
+    this.stop = function () {
+        if (!(this.timer === null)) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+    };
 }
 
 Grid.prototype = new Array(); // Inherit from Array
