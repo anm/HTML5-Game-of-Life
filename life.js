@@ -65,6 +65,7 @@ var grid = new Grid(numColumns, numRows);
 var prev_grid = new Grid(numColumns, numRows);
 var period = 100;
 var clock = new Clock(tick, period);
+var default_period = 200;
 
 window.onload = load;
 
@@ -105,6 +106,30 @@ function make_ui() {
     reset.id = "reset";
     body.appendChild(reset);
 
+    var speed_slider = document.createElement('div');
+    speed_slider.id = 'speed-slider';
+    body.appendChild(speed_slider);
+
+    var speed = document.createElement('div');
+    speed.id = 'speed';
+    speed.appendChild(document.createTextNode(
+        "Update: " + default_period + "ms"));
+    body.appendChild(speed);
+
+    $(function() {
+        $( "#speed-slider" ).slider({
+            range: "min",
+            value: default_period,
+            min: 10,
+            max: 1000,
+            slide: function( event, ui ) {
+                $( "#speed" ).text( "Update:" + ui.value + "ms");
+                clock.setPeriod(ui.value);
+            }
+        }).width(numColumns * cell_size);;
+    });
+//    $('#speed_slider')
+    
     var gen_text = document.createElement('div');
     gen_text.id = 'generationLabel';
     gen_text.appendChild(document.createTextNode('Generation: '));
