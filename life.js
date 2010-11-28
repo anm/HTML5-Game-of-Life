@@ -77,8 +77,10 @@ function reset() {
     generation = 0;
     show_generation();
     grid = new Grid(numColumns, numRows);
-    display(grid);
     prev_grid = new Grid(numColumns, numRows);
+
+    var table = document.getElementById("1");
+    table.parentNode.replaceChild(make_table("1", grid), table);
 }
 
 function make_ui() {
@@ -101,6 +103,7 @@ function make_ui() {
     var reset = document.createElement('button');
     reset.appendChild(document.createTextNode('Reset'));
     reset.onclick = this.reset;
+    reset.id = "reset";
     body.appendChild(reset);
 
     var gen_text = document.createElement('div');
