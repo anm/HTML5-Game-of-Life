@@ -187,6 +187,19 @@ function display(grid) {
     }
 }
 
+function display_point(grid, x, y) {
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+
+    if (grid[x][y]) {
+        grid_tbody.childNodes[y].childNodes[x]
+            .className = "live " + "g" + grid[x][y];
+    } else {
+        grid_tbody.childNodes[y].childNodes[x]
+            .className = "dead";
+    }
+}
+
 /* Compute and display the next generation of grid. */
 function tick() {
     grid = nextGeneration(grid);
@@ -270,5 +283,5 @@ function toggle_cell(x, y) {
     } else {
         grid[x][y] = 1;
     }
-    display(grid);
+    display_point(grid, x, y);
 }
