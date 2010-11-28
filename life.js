@@ -147,14 +147,11 @@ function nextGeneration(grid) {
         for (var x = 1; x < grid.numColumns - 1; x++) {
             var sum = area_sum(grid, x, y);
 
-
             var prev = grid[x][y] || 0;
             if (live_p(prev, sum)) {
                 // Add one to the survival time but stop at a max
                 // limit to avoid rollover.
                 ng[x][y] = prev < 10 ? prev + 1 : prev;
-            } else {
-                ng[x][y] = 0;
             }
         }
     }
