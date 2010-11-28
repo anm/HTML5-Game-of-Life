@@ -27,6 +27,14 @@ function Clock(func, period) {
     this.func = func;
     this.period = period;
 
+    this.setPeriod = function (period) {
+        this.period = period;
+        if (this.timer !== null) {
+            this.stop();
+            this.start();
+        }
+    }
+        
     this.start = function () {
         if (this.timer === null) {
             this.timer = setInterval(this.func, this.period);
