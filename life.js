@@ -85,8 +85,7 @@ function reset() {
 
 function make_ui() {
     var body = document.getElementsByTagName("body")[0];        
-    body.innerHTML = '';
-    
+
     var tick = document.createElement('button');      
     tick.appendChild(document.createTextNode('Tick'));
     body.appendChild(tick);
@@ -121,7 +120,7 @@ function make_ui() {
 
     var table = make_table('1', grid);
     grid_div.appendChild(table);
-    
+
     var status = document.createElement('div');
     status.id = 'status';
     status.innerHTML = 'Stopped';
@@ -286,7 +285,7 @@ function make_table(id, grid) {
     tbl.setAttribute("rules", "all");
     tbl.setAttribute("cellpadding", "5px");
     tbl.setAttribute("id", id);
-    
+
     return tbl;
 }
 
