@@ -2,9 +2,18 @@
 <head>
 <title>Game of Life</title>
 
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="initial-scale=1, user-scalable=no" />
+<mate name="format-detection" content="telephone=no" />
+
+
 <style type="text/css">
-.live { background-color: #000 }
-.dead { background-color: #fff }
+body {background-color: #000;
+color: #eee}
+.live { background-color: #fff }
+.dead { background-color: #000 }
 .g5 { background-color: #00f }
 .g4 { background-color: #0ff }
 .g3 { background-color: #f00 }
@@ -22,10 +31,15 @@ href="css/ui-lightness/jquery-ui-1.8.6.custom.css" rel="stylesheet" />
 <script src="jquery.ui.slider.js"></script>
 
 <script src="jquery.ui.ipad.js"></script>
+
 <script src="life.js"></script>
 </head>
 
+
 <body>
+<!-- <canvas id="canvas" width="300" height="300"></canvas> -->
+<input type="range" min="10" max="1000" value="200">
+
 
 </body>
 </html>
