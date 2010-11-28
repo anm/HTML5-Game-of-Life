@@ -44,9 +44,14 @@ function Clock(func, period) {
 /* Grid Class */
 Grid.prototype = new Array(); // Inherit from Array
 Grid.prototype.constructor = Grid; // Set the "class" back to Grid
-
 // The constructor
 function Grid(numColumns, numRows) {
+    if (isNaN(Number(numColumns)) ||
+        isNaN(Number(numRows))) {
+        throw new Error(
+            "Grid constructor requires two numerical dimensions");
+    }
+
     this.numColumns = numColumns;
     this.numRows    = numRows;
 
