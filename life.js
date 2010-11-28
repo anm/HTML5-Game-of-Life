@@ -151,7 +151,7 @@ function nextGeneration(grid) {
             if (live_p(prev, sum)) {
                 // Add one to the survival time but stop at a max
                 // limit to avoid rollover.
-                ng[x][y] = prev < 10 ? prev + 1 : prev;
+                ng[x][y] = prev < 2 ? prev + 1 : prev;
             }
         }
     }
