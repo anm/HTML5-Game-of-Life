@@ -62,6 +62,7 @@ function Grid(numColumns, numRows) {
 }
 
 var grid = new Grid(numColumns, numRows);
+var prev_grid = new Grid(numColumns, numRows);
 var period = 100;
 var clock = new Clock(tick, period);
 
@@ -77,6 +78,7 @@ function reset() {
     show_generation();
     grid = new Grid(numColumns, numRows);
     display(grid);
+    prev_grid = new Grid(numColumns, numRows);
 }
 
 function make_ui() {
@@ -181,12 +183,14 @@ function display(grid) {
 
     for (var x = 0; x < grid.numColumns; x++) {
         for (var y = 0; y < grid.numRows; y++) {
-            if (grid[x][y]) {
-                grid_tbody.childNodes[y].childNodes[x]
-                    .className = "live " + "g" + grid[x][y];
-            } else {
-                grid_tbody.childNodes[y].childNodes[x]
-                    .className = "dead";
+            if ((grid[x][y]) != (prev_grid[x][y])) {
+                if (grid[x][y]) {
+                    grid_tbody.childNodes[y].childNodes[x]
+                        .className = "live " + "g" + grid[x][y];
+                } else {
+                    grid_tbody.childNodes[y].childNodes[x]
+                        .className = "dead";
+                }
             }
         }
     }
@@ -207,6 +211,7 @@ function display_point(grid, x, y) {
 
 /* Compute and display the next generation of grid. */
 function tick() {
+    prev_grid = grid;
     grid = nextGeneration(grid);
     display(grid);
     ++generation;
