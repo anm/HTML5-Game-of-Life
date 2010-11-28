@@ -7,3 +7,11 @@ Colour
 Rules
 Pattern Library
 Statistics - e.g. population graph over time
+
+
+QUnit patches:
+      Only show diff if there is a difference!
+      Option to print arb. data.
+      Tap plan output.
+      Option to suppress unwanted data dump.
+      Catch errors in test - don't just let the whole thing die.
