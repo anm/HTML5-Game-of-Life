@@ -1,45 +1,81 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>Game of Life</title>
 
-
-
+<!-- Fullscreen when run from icon -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
+
+<!-- Scale done on double tap -->
 <meta name="viewport" content="initial-scale=1, user-scalable=no" />
+
+<!-- Do not parse for and highlight phone numbers -->
 <mate name="format-detection" content="telephone=no" />
 
-
-<style type="text/css">
-body {background-color: #000;
-color: #eee}
-.live { background-color: #fff }
-.dead { background-color: #000 }
-.g5 { background-color: #00f }
-.g4 { background-color: #0ff }
-.g3 { background-color: #f00 }
-.g2 { background-color: #ff0 }
-.g1 { background-color: #0f0 }
-</style>
-
+<!-- JQuery and JQuery UI -->
 <link type="text/css"
-href="css/ui-lightness/jquery-ui-1.8.6.custom.css" rel="stylesheet" />
+href="css/ui-darkness/jquery-ui-1.8.6.custom.css" rel="stylesheet" />
 
-<script src="jquery.js"></script>
-<script src="jquery.ui.core.js"></script>
-<script src="jquery.ui.widget.js"></script>
-<script src="jquery.ui.mouse.js"></script>
-<script src="jquery.ui.slider.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/jquery.ui.js"></script>
+<script src="js/jquery.ui.ipad.js"></script>
 
-<script src="jquery.ui.ipad.js"></script>
-
-<script src="life.js"></script>
+<!-- Life -->
+<link type="text/css"
+href="css/life.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="test/qunit.css"></style>
 </head>
 
 
 <body>
-<!-- <canvas id="canvas" width="300" height="300"></canvas> -->
-<input type="range" min="10" max="1000" value="200">
+<div id="controls">
+  <div id="buttons">
+    <input type="button" id="tick" value="Tick" />
+    <input type="button" id="start" value="Start" />
+    <input type="button" id="stop" value="Stop" />
+    <input type="button" id="reset" value="Reset" />
+  </div>
 
+  <div id="speed-slider"></div>
+</div>
+
+<div id="status-display">
+  <span id="speed-display">Update: <span id="speed"></span>ms</span>
+  <span id="generation-display">Generation: <span id="generation"></span></span>
+  <span id="status">Stopped</span>
+ </div>
+
+<div id="grid"></div>
+
+<div id="panels">
+  <h3><a href="#">Size</a></h3>
+  <div>
+    <div id="numRows-slider"></div>
+    <div id="numRows-display"></div>
+    <div id="numColumns-slider"></div>
+    <div id="numColumns-display"></div>
+
+    <div id="cellsize-slider"></div>
+    <div id="cellsize-display"></div>
+  </div>
+
+  <h3><a href="#">Colour</a></h3>
+  <div>
+    <label for="colour-p">Use colour to show generations?</label>
+    <input type="checkbox" id="colour-p">
+    <div id="colour-pickers"></div>
+  </div>
+  <h1><a href="#">Rules</a></h1>
+  <div>
+  </div>
+  <h1><a href="#">Implementation Details</a></h1>
+  <div>
+  </div>
+</div>
+
+<script src="js/life.js"></script>
+<script src="test/qunit.js"></script>
+<script src="test/life.js"></script>
 
 </body>
 </html>

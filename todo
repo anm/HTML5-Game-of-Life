@@ -1,11 +1,20 @@
 Clean up code
 Optimise display
 Config - UI
+       Colour
+       Rules
+       Grid Size
+       Cell Size
+       Edge Behavoir
+       Table or Canvas
+       Save / Load Games
+
 Auto-sizing
 HTML5 Canvas
 Colour
 Rules
 Pattern Library
+Save state between reloads
 Statistics - e.g. population graph over time
 
 
@@ -15,3 +24,6 @@ QUnit patches:
       Tap plan output.
       Option to suppress unwanted data dump.
       Catch errors in test - don't just let the whole thing die.
+
+      Do something reasonable when stylesheet is not loaded. I found nothing happened and took
+      ages to track down the bug.
