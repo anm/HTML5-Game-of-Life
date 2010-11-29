@@ -74,11 +74,13 @@ var prev_grid = new Grid(numColumns, numRows);
 var period = 100;
 var clock = new Clock(tick, period);
 var default_period = 200;
+var cell_size = 20; //px
 
 window.onload = load;
 
 function load() {
-    make_ui();
+//    alert(window.location.search);
+        make_ui();
 }
 
 function reset() {
@@ -92,37 +94,29 @@ function reset() {
     table.parentNode.replaceChild(make_table("1", grid), table);
 }
 
+function run_qunit_tests() {
+    $("head").append('<link rel="stylesheet" type="text/css" href="test/qunit.css"></style>');
+    $("body").prepend(
+        '<div><h1 id="qunit-header">QUnit example</h1>'
+            +'<h2 id="qunit-banner"></h2>'
+            + '<h2 id="qunit-userAgent"></h2>'
+            + '<ol id="qunit-tests"></ol></div><br><br><br>'
+    );
+    $(document).ready(function () {
+        alert("ready");
+//        $("body").append(
+    });
+}
+
 function make_ui() {
-    var body = document.getElementsByTagName("body")[0];        
+    $("#tick").click(this.tick);
+    $("#start").click(function() { clock.start();
+                                   status.innerHTML = 'Running';});
+    $("#stop").click(function() { clock.stop();
+                                  status.innerHTML = 'Stopped';});
+    $("#reset").click(this.reset);
 
-    var tick = document.createElement('button');      
-    tick.appendChild(document.createTextNode('Tick'));
-    body.appendChild(tick);
-    tick.onclick = this.tick;
-
-    var start = document.createElement('button');       
-    start.appendChild(document.createTextNode('Start'));
-    body.appendChild(start);
-
-    var stop = document.createElement('button');        
-    stop.appendChild(document.createTextNode('Stop'));
-    body.appendChild(stop);
-
-    var reset = document.createElement('button');
-    reset.appendChild(document.createTextNode('Reset'));
-    reset.onclick = this.reset;
-    reset.id = "reset";
-    body.appendChild(reset);
-
-    var speed_slider = document.createElement('div');
-    speed_slider.id = 'speed-slider';
-    body.appendChild(speed_slider);
-
-    var speed = document.createElement('div');
-    speed.id = 'speed';
-    speed.appendChild(document.createTextNode(
-        "Update: " + default_period + "ms"));
-    body.appendChild(speed);
+    $("#speed").text(default_period);
 
     $(function() {
         $( "#speed-slider" ).slider({
@@ -131,43 +125,24 @@ function make_ui() {
             min: 10,
             max: 1000,
             slide: function( event, ui ) {
-                $( "#speed" ).text( "Update:" + ui.value + "ms");
+                $( "#speed" ).text(ui.value);
                 clock.setPeriod(ui.value);
             }
-        }).width(numColumns * cell_size);;
+        })
     });
-//    $('#speed_slider')
     
-    var gen_text = document.createElement('div');
-    gen_text.id = 'generationLabel';
-    gen_text.appendChild(document.createTextNode('Generation: '));
-    var gen = document.createElement('span');
-    gen_text.appendChild(gen);
-    gen.id = 'generation';
-    body.appendChild(gen_text);
     show_generation();
 
-    var grid_div = document.createElement('div');
-    grid_div.id = 'grid';
-    body.appendChild(grid_div);
-
     var table = make_table('1', grid);
-    grid_div.appendChild(table);
+    $("#grid").append(table);
 
-    var status = document.createElement('div');
-    status.id = 'status';
-    status.innerHTML = 'Stopped';
-    body.appendChild(status);
-    
-    start.onclick = function() { clock.start();
-                                 status.innerHTML = 'Running';}
+    $("#panels").accordion();
 
-    stop.onclick  = function() { clock.stop();
-                                 status.innerHTML = 'Stopped';}
+    run_qunit_tests();
 }
 
 function show_generation() {
-    document.getElementById('generation').innerHTML = generation;
+    $('#generation').text(generation);
 }
 
 /* Takes a Grid.
@@ -208,6 +183,10 @@ function live_p(generation, count) {
     }
     return false;
 }
+
+//   var canvasContext = document.getElementById("canvas").getContext("2d");
+
+// canvasContext.fillRect(250, 25, 150, 100);
 
 function display(grid) {
     var table = document.getElementById("1");
@@ -313,7 +292,7 @@ function make_table(id, grid) {
     
     tbl.setAttribute("border", "2");
     tbl.setAttribute("rules", "all");
-    tbl.setAttribute("cellpadding", "5px");
+    tbl.setAttribute("cellpadding", cell_size / 2 + "px");
     tbl.setAttribute("id", id);
 
     return tbl;

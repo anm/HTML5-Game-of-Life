@@ -153,3 +153,10 @@ test("Reset button", 5, function () {
     equal(document.getElementById('generation').innerHTML, 0,
           "generation label is 0");
 });
+
+test("Run label", 2, function() {
+    equal($("#status").innerHTML, "Stopped", "Status stopped");
+    
+    equal($("#status").innerHTML, "Running", "Status Running");
+
+});
