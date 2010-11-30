@@ -177,9 +177,16 @@ test("Reset button", 5, function () {
           "generation label is 0");
 });
 
-test("Run label", 2, function() {
-    equal($("#status").innerHTML, "Stopped", "Status stopped");
-    
-    equal($("#status").innerHTML, "Running", "Status Running");
+test("Run state text set correctly", 4, function() {
+    equal($("#status").html(), "Stopped", "Initially stopped");
 
+    simulateClick($('#start').get(0));
+    equal($("#status").html(), "Running", "Status Running");
+
+    simulateClick($('#stop').get(0));
+    equal($("#status").html(), "Stopped", "Stopped again");
+
+    simulateClick($('#start').get(0));
+    simulateClick($('#reset').get(0));
+    equal($("#status").html(), "Stopped", "Reset button also sets status to Stopped");
 });
