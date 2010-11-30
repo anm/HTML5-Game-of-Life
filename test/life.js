@@ -160,7 +160,7 @@ test("Reset button", 5, function () {
     show_generation();
 
     /* Reset */
-    document.getElementById("reset").onclick();
+    simulateClick(document.getElementById("reset"));
 
     /* Test clean */
     var clean_grid = new Grid(numColumns, numRows);
