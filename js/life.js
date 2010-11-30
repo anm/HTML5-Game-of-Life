@@ -76,15 +76,13 @@ var clock = new Clock(tick, period);
 var default_period = 200;
 var cell_size = 20; //px
 
-window.onload = load;
-
 function load() {
-//    alert(window.location.search);
         make_ui();
 }
 
 function reset() {
     clock.stop();
+    $('#status').html("Stopped");
     generation = 0;
     show_generation();
     grid = new Grid(numColumns, numRows);
@@ -111,9 +109,10 @@ function run_qunit_tests() {
 function make_ui() {
     $("#tick").click(this.tick);
     $("#start").click(function() { clock.start();
-                                   status.innerHTML = 'Running';});
+                                   $('#status').html('Running')});
     $("#stop").click(function() { clock.stop();
-                                  status.innerHTML = 'Stopped';});
+                                  $('#status').html('Stopped');});
+
     $("#reset").click(this.reset);
 
     $("#speed").text(default_period);
