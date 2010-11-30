@@ -1,3 +1,26 @@
+/* Simulate a user clicking on an object.
+   * Should work in IE but not tested.
+*/
+function simulateClick(dom_object) {
+    if (!dom_object) {
+        throw new Error("simulateClick: dom_object is not defined");
+    }
+
+    if (dom_object instanceof jQuery) {
+        throw new Error("simulateClick: Require a DOM object, you gave me a jQuery one."
+                        + " Hint: use .get(0) to get DOM object from jQuery");
+    }
+
+    if (document.createEvent) { // Standard
+        var e = document.createEvent('MouseEvents');
+        e.initEvent('click', true, true);
+            dom_object.dispatchEvent(e);
+    } else if (document.createEventObject) { // for IE
+        document.createEventObject();
+        dom_object.fireEvent('onclick');
+    }
+}
+
 test ("Initialise programme", 3, function() {
     ok(grid instanceof Grid, "grid is Grid");
     ok(prev_grid instanceof Grid, "prev_grid is Grid");
