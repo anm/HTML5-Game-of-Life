@@ -100,10 +100,8 @@ function run_qunit_tests() {
             + '<h2 id="qunit-userAgent"></h2>'
             + '<ol id="qunit-tests"></ol></div><br><br><br>'
     );
-    $(document).ready(function () {
-        alert("ready");
-//        $("body").append(
-    });
+    // I wanted to add the test script here too but it wasn't working.
+    // Taking too long to debug so will add it manually as required.
 }
 
 function make_ui() {
