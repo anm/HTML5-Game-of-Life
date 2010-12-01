@@ -104,6 +104,26 @@ function run_qunit_tests() {
     // Taking too long to debug so will add it manually as required.
 }
 
+/* Convert string of form "rgb(r, g, b)", as returned by css methods,
+to #xxxxxx formx */
+function rgb_to_hex(string) {
+    var regex = /^rgb\((\d{0,3}), (\d{0,3}), (\d{0,3})\)$/;
+    var caps  = regex.exec(string);
+    if (!caps || caps.length != 4) {
+        throw new Error("rgb_to_hex: string did not match expected pattern");
+    }
+
+    var hex = "#";
+    for (var i = 1; i < 4; ++i) {
+        var s = Number(caps[i]).toString(16);
+        if (s.length == 1) {
+            s = '0' + s;
+        }
+        hex += s;
+    }
+    return hex;
+}
+
 function make_ui() {
     $("#tick").click(this.tick);
     $("#start").click(function() { clock.start();
