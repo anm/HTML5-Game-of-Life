@@ -190,3 +190,10 @@ test("Run state text set correctly", 4, function() {
     simulateClick($('#reset').get(0));
     equal($("#status").html(), "Stopped", "Reset button also sets status to Stopped");
 });
+
+test("rgb_to_hex function", 4, function() {
+    equals(rgb_to_hex("rgb(0, 0, 0)"), '#000000', "0s work");
+    equals(rgb_to_hex("rgb(255, 255, 255)"), '#ffffff', "All 255 ok");
+    equals(rgb_to_hex("rgb(17, 100, 231)"), '#1164e7', "Values in correct order");
+    equals(rgb_to_hex("rgb(23, 0, 16)"), '#170010', "Zero padded correctly");
+});
