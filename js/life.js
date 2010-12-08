@@ -166,7 +166,7 @@ function show_generation() {
  * Returns a Grid for the next generation of the supplied Grid.
  */
 function nextGeneration(grid) {
-    var ng = new Grid(grid.numRows, grid.numColumns);
+    var ng = new Grid(grid.numColumns, grid.numRows);
 
     for (var y = 1; y < grid.numRows - 1; y++) {
         for (var x = 1; x < grid.numColumns - 1; x++) {

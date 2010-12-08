@@ -149,6 +149,53 @@ test("Toggle cell on click", 6, function() {
     equals(grid[x][y] || 0, 0, "grid generation 0 (dead)");
 });
 
+test("Toggle cell on click, non-square grid", 12, function() {
+    /* Use a non-square grid */
+    grid = new Grid(15, 5);
+
+    var table = document.getElementById("1");
+    table.parentNode.replaceChild(make_table("1", grid), table);
+
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+
+    /* Check a point that is outside the square grid of size min(x,y).
+       * This is to catch a bug that occured when rows and columns
+       * were interchanged. */
+
+    var x = 5
+    var y = 4;
+
+    var cell = grid_tbody.childNodes[y].childNodes[x];
+
+    equals(cell.className, "dead", "Initially dead");
+    equals(grid[x][y] || 0, 0, "grid generation 0 (dead)");
+    simulateClick(cell);
+    equals(cell.className, "live g1", "Live and generation 1 after click");
+    equals(grid[x][y], 1, "grid generation 1 (live)");
+    simulateClick(cell);
+    equals(cell.className, "dead", "Dead again after second click");
+    equals(grid[x][y] || 0, 0, "grid generation 0 (dead)");
+
+    /* Also test it after a tick */
+    reset(); // In case previous tests left something
+    tick();
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+    var cell = grid_tbody.childNodes[y].childNodes[x];
+
+    equals(cell.className, "dead", "After tick: Initially dead");
+    equals(grid[x][y] || 0, 0, "After tick: grid generation 0 (dead)");
+    simulateClick(cell);
+    equals(cell.className, "live g1", "After tick: Live and generation 1 after click");
+    equals(grid[x][y], 1, "After tick: grid generation 1 (live)");
+    simulateClick(cell);
+    equals(cell.className, "dead", "After tick: Dead again after second click");
+    equals(grid[x][y] || 0, 0, "After tick: grid generation 0 (dead)");
+
+});
+
+
 test("Reset button", 5, function () {
 
     /* Pollute state */
