@@ -77,6 +77,8 @@ var period    = 100;
 var clock     = new Clock(tick, period);
 var default_period = 200;
 var cell_size = 20; //px
+var track_n_generations = 3; // Must be > 0.
+var max_generations = 10;
 
 function load() {
     make_ui();
@@ -158,6 +160,70 @@ function make_ui() {
 
     $("#panels").accordion();
 
+    /* Colours */
+    for (var i = 1; i <= max_generations; ++i) {
+        $('head').append('<style id="g' + i + '"></style>')
+
+        $('#colour-pickers table').append(
+            '<tr id="colour-and-label-' + i + '"><td>G' + i + '</td><td id="colour-' + i
+                + '" class="swatch g' + i + '"></td></tr>'
+        );
+
+        set_swatch_visibility();
+
+
+        function set_generation_colour(generation, colour) {
+            $('#g' + generation).html('.g' + generation + ' {background-color: ' + colour + '}')
+        }
+
+        function bind_selector_to_generation(generation) {
+            $.farbtastic('#colour-picker').linkTo(
+                function(colour) {set_generation_colour(generation, colour)}
+            );
+            $.farbtastic('#colour-picker').setColor(
+                rgb_to_hex($('.g' + generation).css('background-color')));
+        }
+
+
+        function make_click_handler() {
+            var j = i;
+            return function () {
+                bind_selector_to_generation(j);
+            }
+        }
+
+//        $(bleh).css('background-color'); // == rgb(...)
+        var click_handler = make_click_handler();
+
+        $('#colour-' + i).click(click_handler);      
+    }
+
+    $('#colour-picker').farbtastic();
+    bind_selector_to_generation(1);
+    
+
+    $('#no-of-colours-slider').slider({
+        value: track_n_generations,
+        min: 1,
+        max: max_generations,
+        slide: function(event, ui) {
+            track_n_generations = ui.value;
+            // TODO: full redraw required
+            /* Show colour pickers */
+            set_swatch_visibility();
+
+        }
+    });
+
+    function set_swatch_visibility() {
+        for (var i = 1; i <= track_n_generations; ++i) {
+            $('#colour-and-label-' + i).css('visibility', 'visible');
+        }
+        for (var i = track_n_generations + 1; i <= max_generations; ++i) {
+            $('#colour-and-label-' + i).css('visibility', 'hidden');
+        } 
+    }
+
 }
 
 function show_generation() {
@@ -178,7 +244,7 @@ function nextGeneration(grid) {
             if (live_p(prev, sum)) {
                 // Add one to the survival time but stop at a max
                 // limit to avoid rollover.
-                ng[x][y] = prev < 2 ? prev + 1 : prev;
+                ng[x][y] = prev < track_n_generations ? prev + 1 : prev;
             }
         }
     }

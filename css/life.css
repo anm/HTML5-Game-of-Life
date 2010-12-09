@@ -6,12 +6,17 @@ body {
 /* Cells */
 .live { background-color: #fff }
 .dead { background-color: #000 }
-.g5 { background-color: #00f }
-.g4 { background-color: #0ff }
-.g3 { background-color: #f00 }
-.g2 { background-color: #ff0 }
-.g1 { background-color: #0f0 }
 
+.g1  { background-color: #0f0 }
+.g2  { background-color: #ff0 }
+.g3  { background-color: #f00 }
+.g4  { background-color: #0ff }
+.g5  { background-color: #00f }
+.g6  { background-color: #0f0 }
+.g7  { background-color: #ff0 }
+.g8  { background-color: #f00 }
+.g9  { background-color: #0ff }
+.g10 { background-color: #00f }
 
 #speed-display {
     float: left;
@@ -42,5 +47,36 @@ body {
     float: left;
 }
 
+/* The control panel pane */
+#colour-panel {
+    height: 330px;
+}
+
+#no-of-colours-slider {
+    margin: 10px;
+}
+
+/* All swatches and labels */
+#colour-pickers {
+    float: left;
+}
+
+/* Swatch and label are in a table. The minimum row height is
+determined by the label text height. For square swatches set this the
+same as swatch width. */
+
+#colour-pickers tr {
+    height: 1.2em;
+}
+
+.swatch {
+    width: 1.2em;
+}
+
+/* Farbtastic wheel */
+#colour-picker {
+    float: left;
+    width: 195px;
+    margin: 20px;
 }
 
