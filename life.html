@@ -20,9 +20,14 @@ href="css/ui-darkness/jquery-ui-1.8.6.custom.css" rel="stylesheet" />
 <script src="js/jquery.ui.js"></script>
 <script src="js/jquery.ui.ipad.js"></script>
 
+<!-- Colour Picker -->
+<link type="text/css" href="css/farbtastic.css" rel="stylesheet" />
+<script src="js/farbtastic.js"></script>
+
 <!-- Life -->
 <link type="text/css"
 href="css/life.css" rel="stylesheet" />
+
 </head>
 
 
@@ -47,7 +52,19 @@ href="css/life.css" rel="stylesheet" />
 <div id="grid"></div>
 
 <div id="panels">
-  <h3><a href="#">Size</a></h3>
+  <h3><a href="#">Colour</a></h3>
+  <div id="colour-panel">
+    How many generations do you want to colour?
+    <div id="no-of-colours-slider"></div>
+    <div id="colour-pickers">
+      <table>
+      </table>
+    </div>
+    Click swatch to change
+    <div id="colour-picker"></div>
+  </div>
+
+  <h3><a href="#">Grid</a></h3>
   <div>
     <div id="numRows-slider"></div>
     <div id="numRows-display"></div>
