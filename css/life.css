@@ -12,10 +12,11 @@ body {
 .g2 { background-color: #ff0 }
 .g1 { background-color: #0f0 }
 
-#panels {
-    width: 300px;
-    margin-left:20px;
+
+#speed-display {
     float: left;
+    margin-right: 1em;
+    min-width: 8em;
 }
 
 #speed {
