@@ -1,4 +1,4 @@
-var numRows = 30;
+var numRows = 25;
 var numColumns = 30;
 var generation = 0;
 
@@ -69,15 +69,18 @@ function Grid(numColumns, numRows) {
     }
 }
 
-var grid = new Grid(numColumns, numRows);
+window.onload = load;
+
+var grid      = new Grid(numColumns, numRows);
 var prev_grid = new Grid(numColumns, numRows);
-var period = 100;
-var clock = new Clock(tick, period);
+var period    = 100;
+var clock     = new Clock(tick, period);
 var default_period = 200;
 var cell_size = 20; //px
 
 function load() {
-        make_ui();
+    make_ui();
+//    run_qunit_tests();
 }
 
 function reset() {
@@ -95,7 +98,7 @@ function reset() {
 function run_qunit_tests() {
     $("head").append('<link rel="stylesheet" type="text/css" href="test/qunit.css"></style>');
     $("body").prepend(
-        '<div><h1 id="qunit-header">QUnit example</h1>'
+        '<div><h1 id="qunit-header">QUnit</h1>'
             +'<h2 id="qunit-banner"></h2>'
             + '<h2 id="qunit-userAgent"></h2>'
             + '<ol id="qunit-tests"></ol></div><br><br><br>'
@@ -137,7 +140,7 @@ function make_ui() {
 
     $(function() {
         $( "#speed-slider" ).slider({
-            range: "min",
+            range: "min", // Coloured bar from min or max to pointer
             value: default_period,
             min: 10,
             max: 1000,
@@ -155,7 +158,6 @@ function make_ui() {
 
     $("#panels").accordion();
 
-    run_qunit_tests();
 }
 
 function show_generation() {

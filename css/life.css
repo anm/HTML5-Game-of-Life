@@ -1,5 +1,9 @@
-body {background-color: #000;
-color: #eee}
+body {
+    background-color: #000;
+    color: #eee
+}
+
+/* Cells */
 .live { background-color: #fff }
 .dead { background-color: #000 }
 .g5 { background-color: #00f }
@@ -14,26 +18,28 @@ color: #eee}
     float: left;
 }
 
-#grid {
-    float: left;
-}
-
-span {
-//    margin-right: 1em;
-}
-
-#speed-display {
-    float: left;
-    margin-right: 1em;
-    
+#speed {
+    width: 10em;
 }
 
 #generation-display {
     float: left;
     margin-right: 1em;
-
 }
 
 #status-display {
     clear: right;
 }
+
+#grid {
+    float: left;
+}
+
+#panels {
+    width: 450px;
+    margin-left: 20px;
+    float: left;
+}
+
+}
+

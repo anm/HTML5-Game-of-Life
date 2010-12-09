@@ -57,25 +57,32 @@ href="css/life.css" rel="stylesheet" />
 
     <div id="cellsize-slider"></div>
     <div id="cellsize-display"></div>
+
   </div>
 
-  <h3><a href="#">Colour</a></h3>
-  <div>
-    <label for="colour-p">Use colour to show generations?</label>
-    <input type="checkbox" id="colour-p">
-    <div id="colour-pickers"></div>
-  </div>
   <h1><a href="#">Rules</a></h1>
   <div>
+    Conway's rules are in effect.
+
+    <ul>
+    <li>A cell is born if it has three neighbours.</li>
+    <li>It stays alive if it has 2 or 3 neighbours.</li>
+    <li>It dies otherwise.</li>
+    </ul>
+
+    <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Conway%27s_Game_of_Life">Wikipedia article</a>
   </div>
+
   <h1><a href="#">Implementation Details</a></h1>
   <div>
   </div>
 </div>
 
 <script src="js/life.js"></script>
+
+<!--
 <script src="test/qunit.js"></script>
 <script src="test/life.js"></script>
-
+-->
 </body>
 </html>
