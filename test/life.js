@@ -55,6 +55,8 @@ test("test_Grid_instantiation", 12, function() {
 });
 
 test("Test nextGeneration", 3, function() {
+    wraparound = false;
+
     var g = new Grid(10, 10);
 
     // Glider
@@ -84,21 +86,173 @@ test("Test nextGeneration", 3, function() {
     // Point
     // (undefined)
 
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Next generation ok for glider and point " + err);
+});
+
+test("Edge wraparound on", 4, function() {
+    wraparound = true;
+    track_n_generations = 10;
+
+    /*  Box in corner */
+    var g = new Grid(10, 10);
+    g[0][0] = 1;
+    g[0][1] = 1;
+    g[1][0] = 1;
+    g[1][1] = 1;
+
+    // The correct new grid.
+    var ngc = new Grid(10, 10);
+    ngc[0][0] = 2;
+    ngc[0][1] = 2;
+    ngc[1][0] = 2;
+    ngc[1][1] = 2;
+
+    var ng = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box in corner preserved " + err);
+
+    /*  Box in middle */
+    var g = new Grid(10, 10);
+    g[5][5] = 1;
+    g[5][6] = 1;
+    g[6][5] = 1;
+    g[6][6] = 1;
+
+    // The correct new grid.
+    var ngc = new Grid(10, 10);
+    ngc[5][5] = 2;
+    ngc[5][6] = 2;
+    ngc[6][5] = 2;
+    ngc[6][6] = 2;
+
+    var ng = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box in middle preserved " + err);
+
+    /* Box on both joins. */
+    var g = new Grid(10, 10);
+    g[0][0] = 1;
+    g[9][0] = 1;
+    g[0][9] = 1;
+    g[9][9] = 1;
+
+    // The correct new grid. No change expected.
+    var ngc = new Grid(10, 10);
+    ngc[0][0] = 2;
+    ngc[9][0] = 2;
+    ngc[0][9] = 2;
+    ngc[9][9] = 2;
+
+    var ng  = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box across both edges preserved " + err);
+
+    /* Glider crosses both edges */
+    var g = new Grid(10, 10);
+    g[7][9] = 1;
+    g[8][9] = 1;
+    g[9][9] = 1;
+    g[9][8] = 1;
+    g[8][7] = 1;
+
+    // 4 ticks to move glider
+    var ng = nextGeneration(nextGeneration(nextGeneration(nextGeneration(g))));
+
+    // The correct new grid
+    var ngc = new Grid(10, 10);
+
+    // Glider
+    ngc[0][0] = 1;
+    ngc[8][0] = 4;
+    ngc[9][0] = 3;
+    ngc[0][9] = 2;
+    ngc[9][8] = 1;
+
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Full glider cycle ok for glider initially in corner " + err);
+});
+
+test("Edge wraparound off", 3, function() {
+    wraparound = false;
+
+    /*  Box in corner */
+    var g = new Grid(10, 10);
+    g[0][0] = 1;
+    g[0][1] = 1;
+    g[1][0] = 1;
+    g[1][1] = 1;
+
+    // The correct new grid. Only change in generation incerment.
+    var ngc = new Grid(10, 10);
+    ngc[0][0] = 2;
+    ngc[0][1] = 2;
+    ngc[1][0] = 2;
+    ngc[1][1] = 2;
+
+    var ng = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box in corner preserved " + err);
+
+    /* Box on both joins. */
+    var g = new Grid(10, 10);
+    g[0][0] = 1;
+    g[9][0] = 1;
+    g[0][9] = 1;
+    g[9][9] = 1;
+
+    // The correct new grid. All dead.
+    var ngc = new Grid(10, 10);
+
+    var ng  = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box across both edges died " + err);
+
+    /* Glider in bottom right corner */
+    var g = new Grid(10, 10);
+    g[7][9] = 1;
+    g[8][9] = 1;
+    g[9][9] = 1;
+    g[9][8] = 1;
+    g[8][7] = 1;
+
+    var ng = nextGeneration(g);
+
+    // The correct new grid
+    var ngc = new Grid(10, 10);
+
+    // Glider
+    ngc[8][9] = 2;
+    ngc[9][9] = 2;
+    ngc[9][8] = 2;
+    ngc[7][8] = 1;
+
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Glider in corner ok, parts off edge dissapear " + err);
+});
+
+test("Edge wraparound UI", 3, function() {
+    equal(wraparound, false, "Wraparound defaults false");
+    simulateClick(document.getElementById("wraparound-p"));
+    equal(wraparound, true,  "Wraparound on after click");
+    simulateClick(document.getElementById("wraparound-p"));
+    equal(wraparound, false, "Wraparound off after second click");
+});
+
+function grid_difference(grid, expected_grid) {
     /* Check grids are the same. Note any differences in err string */
     var err = "";
-    for (x = 0; x < ng.numRows; ++x) {
-        for (y = 0; y < ng.numColumns; ++y) {
-            if (ng[x][y] !== ngc[x][y]) {
+    for (x = 0; x < grid.numRows; ++x) {
+        for (y = 0; y < grid.numColumns; ++y) {
+            if (grid[x][y] !== expected_grid[x][y]) {
                 err += '(' + x + ',' + y + '): '
-                    + 'expect:' + ngc[x][y]
-                    + ' got: ' + ng[x][y] + "\r\n";
+                    + 'expect:' + expected_grid[x][y]
+                    + ' got: ' + grid[x][y] + "\r\n";
             }
         }
     }
-
-    ok(!err, "Next generation ok for glider and point " + err);
-
-});
+    return err;
+}
 
 test("live_p", 14, function() {
     /* Conway's Rules */

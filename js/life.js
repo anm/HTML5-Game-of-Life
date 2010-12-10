@@ -79,6 +79,7 @@ var default_period = 200;
 var cell_size = 20; //px
 var track_n_generations = 3; // Must be > 0.
 var max_generations = 10;
+var wraparound = false;
 
 function load() {
     make_ui();
@@ -224,6 +225,13 @@ function make_ui() {
         } 
     }
 
+    $('#wraparound-p').click(function () {
+        if (this.checked) {
+            wraparound = true;
+        } else {
+            wraparound = false;
+        }
+    }).get(0).checked = wraparound;
 }
 
 function show_generation() {
@@ -236,8 +244,8 @@ function show_generation() {
 function nextGeneration(grid) {
     var ng = new Grid(grid.numColumns, grid.numRows);
 
-    for (var y = 1; y < grid.numRows - 1; y++) {
-        for (var x = 1; x < grid.numColumns - 1; x++) {
+    for (var y = 0; y < grid.numRows; y++) {
+        for (var x = 0; x < grid.numColumns; x++) {
             var sum = area_sum(grid, x, y);
 
             var prev = grid[x][y] || 0;
@@ -324,13 +332,32 @@ function area_sum(grid, point_x, point_y) {
     // The three cells in the rows above and below the given cell
     for (row = point_y - 1; row <= point_y + 1; row = row + 2) {
         for (column = point_x - 1; column <= (point_x + 1); column++) {
-            if( row < 0        || column < 0 ||
+            var nrow    = row;
+            var ncolumn = column;
+
+            if (wraparound) {
+                if (row < 0) {
+                    nrow = grid.numRows - 1;
+                }
+                else if (row == grid.numRows) {
+                    nrow = 0;
+                }
+
+                if (column < 0) {
+                    ncolumn = grid.numColumns - 1;
+                }
+                else if (column == grid.numColumns) {
+                    ncolumn = 0;
+                }
+            } else {
+                if( row < 0        || column < 0 ||
                 row == grid.numRows || column == grid.numColumns) {
                 // Off the edge
-                alert(row + " " +  column);
+                continue;
+                }
             }
 
-            if (grid[column][row]) {
+            if (grid[ncolumn][nrow]) {
                 ++sum;
             }
         }
@@ -339,7 +366,20 @@ function area_sum(grid, point_x, point_y) {
     // The two cells to either side of the given cell
     row = point_y;
     for (column = point_x - 1; column <= (point_x + 1); column += 2) {
-        if (grid[column][row]) { 
+        var ncolumn = column;
+        if (wraparound) {
+            if (ncolumn < 0) {
+                ncolumn = grid.numColumns - 1;
+            } else if (ncolumn == grid.numColumns) {
+                ncolumn = 0;
+            }
+        } else {
+            if (column < 0 || column == grid.numColumns) {
+                continue;
+            }
+        }
+
+        if (grid[ncolumn][row]) {
             ++sum;
         }
     }
