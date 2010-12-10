@@ -163,7 +163,7 @@ function make_ui() {
 
     /* Colours */
     for (var i = 1; i <= max_generations; ++i) {
-        $('head').append('<style id="g' + i + '"></style>')
+        $('head').append('<style id="g' + i + '" type="text/css"></style>')
 
         $('#colour-pickers table').append(
             '<tr id="colour-and-label-' + i + '"><td>G' + i + '</td><td id="colour-' + i
