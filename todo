@@ -1,19 +1,17 @@
 Clean up code
 Optimise display
 Config - UI
-       Colour
        Rules
        Grid Size
        Cell Size
-       Edge Behavoir
        Table or Canvas
        Save / Load Games
 
 Auto-sizing
 HTML5 Canvas
-Colour
 Rules
 Pattern Library
+Zoom (use pinch action)
 Save state between reloads
 Statistics - e.g. population graph over time
 
