@@ -2,14 +2,15 @@
  * variable. */
 var life = function () {
 
-    /* Config */
-    var numRows             = 10;
-    var numColumns          = 10;
-    var period              = 200;
-    var cell_size           = 20; //px
-    var track_n_generations = 3; // Must be > 0.
-    var max_generations     = 10;
-    var wraparound          = false;
+    var config = {
+        numRows             : 10,
+        numColumns          : 10,
+        period              : 200,
+        cell_size           : 20, //px
+        track_n_generations : 3, // Must be > 0.
+        max_generations     : 10,
+        wraparound          : false
+    };
 
     /* Global State */
     var clock;
@@ -21,7 +22,7 @@ var life = function () {
 
 
     function load() {
-        clock = new Clock(tick, period);
+        clock = new Clock(tick, config.period);
         model  = new Model();
         view  = new TableView(model.grid());
 
@@ -111,7 +112,7 @@ var life = function () {
             $("#stop").click(life.stop);
             $("#reset").click(life.reset);
 
-            $("#speed").text(period);
+            $("#speed").text(config.period);
             $("#status").html(this.d_status);
             $('#generation').text(this.d_generation);
 
@@ -121,7 +122,7 @@ var life = function () {
                           range: "min", // Coloured bar from
                           // min or max to
                           // pointer
-                          value: period,
+                          value: config.period,
                           min: 10,
                           max: 1000,
                           slide: function (event, ui) {
@@ -134,7 +135,7 @@ var life = function () {
             $("#panels").accordion();
 
             /* Colours */
-            for (var i = 1; i <= max_generations; ++i) {
+            for (var i = 1; i <= config.max_generations; ++i) {
                 // Create style tag for custom colour
                 $('head').append('<style id="g' + i + '" type="text/css"></style>')
 
@@ -176,11 +177,11 @@ var life = function () {
             bind_selector_to_generation(1);
 
             $('#no-of-colours-slider').slider({
-                                                  value: track_n_generations,
+                                                  value: config.track_n_generations,
                                                   min: 1,
-                                                  max: max_generations,
+                                                  max: config.max_generations,
                                                   slide: function(event, ui) {
-                                                      track_n_generations = ui.value;
+                                                      config.track_n_generations = ui.value;
                                                       // TODO: full redraw required
                                                       /* Show colour pickers */
                                                       set_swatch_visibility();
@@ -189,21 +190,21 @@ var life = function () {
                                               });
 
             function set_swatch_visibility() {
-                for (var i = 1; i <= track_n_generations; ++i) {
+                for (var i = 1; i <= config.track_n_generations; ++i) {
                     $('#colour-and-label-' + i).css('visibility', 'visible');
                 }
-                for (var i = track_n_generations + 1; i <= max_generations; ++i) {
+                for (var i = config.track_n_generations + 1; i <= config.max_generations; ++i) {
                     $('#colour-and-label-' + i).css('visibility', 'hidden');
                 }
             }
 
             $('#wraparound-p').click(function () {
                                          if (this.checked) {
-                                             wraparound = true;
+                                             config.wraparound = true;
                                          } else {
-                                             wraparound = false;
+                                             config.wraparound = false;
                                          }
-                                     }).get(0).checked = wraparound;
+                                     }).get(0).checked = config.wraparound;
         };
 
         this.refreshGrid = function () {
@@ -259,7 +260,7 @@ var life = function () {
 
             tbl.setAttribute("border", "2");
             tbl.setAttribute("rules", "all");
-            tbl.setAttribute("cellpadding", cell_size / 2 + "px");
+            tbl.setAttribute("cellpadding", config.cell_size / 2 + "px");
             tbl.setAttribute("id", id);
 
             return tbl;
@@ -333,8 +334,13 @@ var life = function () {
     }
 
     function Model() {
-        this.d_grid       = new Grid(numRows, numColumns);
-        this.d_generation = 0;
+        var that = this;
+        function init() {
+            that.d_grid       = new Grid(config.numRows, config.numColumns);
+            that.d_generation = 0;
+        }
+
+        init();
 
         this.grid = function () {
             return this.d_grid;
@@ -357,8 +363,7 @@ var life = function () {
         }
 
         this.reset = function () {
-            this.d_grid       = new Grid(numRows, numColumns);
-            this.d_generation = 0;
+            init();
         }
 
         this.tick = function () {
@@ -397,7 +402,7 @@ var life = function () {
                 var nrow    = row;
                 var ncolumn = column;
 
-                if (wraparound) {
+                if (config.wraparound) {
                     if (row < 0) {
                         nrow = grid.numRows - 1;
                     }
@@ -429,7 +434,7 @@ var life = function () {
         row = point_y;
         for (column = point_x - 1; column <= (point_x + 1); column += 2) {
             var ncolumn = column;
-            if (wraparound) {
+            if (config.wraparound) {
                 if (ncolumn < 0) {
                     ncolumn = grid.numColumns - 1;
                 } else if (ncolumn == grid.numColumns) {
@@ -463,7 +468,7 @@ var life = function () {
                 if (live_p(prev, sum)) {
                     // Add one to the survival time but stop at a max
                     // limit to avoid rollover.
-                    ng[x][y] = prev < track_n_generations ? prev + 1 : prev;
+                    ng[x][y] = prev < config.track_n_generations ? prev + 1 : prev;
                 }
             }
         }
