@@ -47,6 +47,20 @@ body {
     float: left;
 }
 
+.config-section {
+    margin-bottom: 10px;
+    padding: 0.5em;
+    border-style: dashed;
+    border-width: thin;
+    border-color: #444;
+}
+
+.config-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 120%;
+}
+
 /* The control panel pane */
 #colour-panel {
     height: 330px;

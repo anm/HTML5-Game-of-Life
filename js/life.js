@@ -5,6 +5,8 @@ var life = function () {
     var config = {
         width               : 25,
         height              : 30,
+        maxWidth            : 50,
+        maxHeight           : 50,
         period              : 200,
         cell_size           : 20, //px
         track_n_generations : 3, // Must be > 0.
@@ -70,6 +72,17 @@ var life = function () {
         view.refreshCell(x, y);
     }
 
+    function setGridWidth(x) {
+        model.setWidth(x);
+        view.grid(model.grid());
+        view.refresh();
+    }
+
+    function setGridHeight(y) {
+        model.setHeight(y);
+        view.grid(model.grid());
+        view.refresh();
+    }
 
     /* ********************** View ********************** */
 
@@ -112,24 +125,51 @@ var life = function () {
             $("#reset").click(life.reset);
 
             $("#speed").text(config.period);
+
+            $('#width-display').text(config.width);
+            $('#height-display').text(config.height);
+
             $("#status").html(this.d_status);
             $('#generation').text(this.d_generation);
 
-            $(function() {
-                  $("#speed-slider").slider(
-                      {
-                          range: "min", // Coloured bar from
-                          // min or max to
-                          // pointer
-                          value: config.period,
-                          min: 10,
-                          max: 1000,
-                          slide: function (event, ui) {
-                              $("#speed").text(ui.value);
-                              clock.setPeriod(ui.value);
-                          }
-                      });
-              });
+            $("#speed-slider").slider(
+                {
+                    range: "min", // Coloured bar from
+                    // min or max to
+                    // pointer
+                    value: config.period,
+                    min: 10,
+                    max: 1000,
+                    slide: function (event, ui) {
+                        config.period = ui.value;
+                        $("#speed").text(ui.value);
+                        clock.setPeriod(ui.value);
+                    }
+                });
+
+            $("#width-slider").slider({
+                                          range: "min",
+                                          value: config.width,
+                                          min: 1,
+                                          max: config.maxWidth,
+                                          slide: function (event, ui) {
+                                              $("#width-display").text(ui.value);
+                                              config.width = ui.value;
+                                              setGridWidth(config.width);
+                                          }
+                                      });
+            $("#height-slider").slider({
+                                          range: "min",
+                                          value: config.height,
+                                          min: 1,
+                                          max: config.maxHeight,
+                                          slide: function (event, ui) {
+                                              $("#height-display").text(ui.value);
+                                              config.height = ui.value;
+                                              setGridHeight(config.height);
+                                          }
+                                      });
+
 
             $("#panels").accordion();
 
@@ -223,9 +263,9 @@ var life = function () {
 
         this.display = function () {
             TableView.prototype.display();
-            var table = make_table('1', grid);
+            var table = make_table('1', this.d_grid);
             $("#grid").append(table);
-            this.displayed_grid = grid.copy();
+            this.displayed_grid = this.d_grid.copy();
         };
 
         function make_table(id, grid) {
@@ -271,8 +311,8 @@ var life = function () {
 
             if (this.d_grid.size() != this.displayed_grid.size()) {
                 // Grid size has changed. Redraw table.
-                table.parent.replaceChild(make_table('1', this.d_grid), table);
-                this.diplayed_grid = grid.copy();
+                table.parentNode.replaceChild(make_table('1', this.d_grid), table);
+                this.displayed_grid = this.d_grid.copy();
             }
             else {
                 // Grid size the same. Do an incremental update.
@@ -334,6 +374,30 @@ var life = function () {
         return "(" + this.width + ", " + this.height + ")";
     };
 
+    Grid.prototype.setWidth = function (x) {
+        if (x < this.width) {
+            // Shrink
+            this.length = x; // trunkate
+        }
+        if (x > this.width) {
+            // Grow
+            for (var i = this.width; i < x; ++i) {
+                this[i] = new Array(this.height);
+            }
+        }
+
+        this.width = x;
+    };
+
+    Grid.prototype.setHeight = function (y) {
+        if (y < this.height) {
+            for (var i = 0; i < this.width; ++i) {
+                this[i].length = y;
+            }
+        }
+        this.height = y;
+    };
+
     // The constructor
     function Grid(width, height) {
         if (isNaN(Number(width)) ||
@@ -387,6 +451,14 @@ var life = function () {
         this.tick = function () {
             this.d_grid = nextGeneration(this.d_grid);
             ++this.d_generation;
+        };
+
+        this.setWidth = function (x) {
+            this.d_grid.setWidth(x);
+        };
+
+        this.setHeight = function (y) {
+            this.d_grid.setHeight(y);
         };
     }
     /* Take the generation number of a cell and the number of neighbours it has.
@@ -593,7 +665,9 @@ var life = function () {
         tick: tick,
         start: start,
         stop: stop,
-        toggle_cell: toggle_cell
+        toggle_cell: toggle_cell,
+
+        config: config
     };
 }();
 

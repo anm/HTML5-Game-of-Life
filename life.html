@@ -69,16 +69,22 @@ href="css/life.css" rel="stylesheet" />
 
   <h3><a href="#">Grid</a></h3>
   <div>
-    <div id="height-slider"></div>
-    <div id="height-display"></div>
-    <div id="width-slider"></div>
-    <div id="width-display"></div>
+    <div class="config-section">
+      <h4>Size</h4>
+      Height: <span id="height-display"></span>
+      <div id="height-slider"></div>
+
+      Width: <span id="width-display"></span>
+      <div id="width-slider"></div>
+    </div>
 
     <div id="cellsize-slider"></div>
     <div id="cellsize-display"></div>
 
-    <label for="wraparound-p">Wrap edges?: </label>
-    <input type="checkbox" id="wraparound-p" />
+    <div class="config-section">
+      <label for="wraparound-p">Wrap edges?: </label>
+      <input type="checkbox" id="wraparound-p" />
+    </div>
   </div>
 
   <h1><a href="#">Rules</a></h1>
