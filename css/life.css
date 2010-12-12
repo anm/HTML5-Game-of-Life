@@ -39,6 +39,7 @@ body {
 
 #grid {
     float: left;
+    margin-left: 10px;
 }
 
 #panels {

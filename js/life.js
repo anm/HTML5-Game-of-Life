@@ -12,7 +12,20 @@ var life = function () {
         max_cell_size       : 50,
         track_n_generations : 3, // Must be > 0.
         max_generations     : 10,
-        wraparound          : false
+        wraparound          : false,
+
+        g_colour            : ['#000', // dead
+                               '#0f0', // g1
+                               '#ff0',
+                               '#f00',
+                               '#0ff',
+                               '#00f',
+                               '#0f0',
+                               '#ff0',
+                               '#f00',
+                               '#0ff',
+                               '#00f', // g10
+                              ]
     };
 
     /* Global State */
@@ -26,7 +39,7 @@ var life = function () {
     function load() {
         clock = new Clock(tick, config.period);
         model = new Model();
-        view  = new TableView(model.grid());
+        view  = new CanvasView(model.grid());
 
         view.display();
 
@@ -87,6 +100,12 @@ var life = function () {
 
     function setCellSize (px) {
         view.setCellSize(px);
+    }
+
+    /* generation 0 means dead cells. */
+    function setGenerationColour (generation, colour) {
+        config.g_colour[generation] = colour;
+        view.updateColours();
     }
 
     /* ********************** View ********************** */
@@ -191,15 +210,13 @@ var life = function () {
 
             /**** Colours ****/
 
-            function set_generation_colour(generation, colour) {
-                $('#g' + generation).html('.g' + generation
-                                          + ' {background-color: ' + colour + '}');
-            }
-
             function bind_selector_to_generation(generation) {
                 $.farbtastic('#colour-picker').linkTo(
-                    function (colour) {set_generation_colour(generation, colour);}
-                );
+                    function (colour) {
+                        $('#g' + generation).html('.g' + generation
+                                                  + ' {background-color: ' + colour + '}');
+                        setGenerationColour(generation, colour);
+                    });
 
                 $.farbtastic('#colour-picker').setColor(
                     rgb_to_hex($('.g' + generation).css('background-color')));
@@ -292,6 +309,10 @@ var life = function () {
             $('#1').get(0).setAttribute("cellpadding", this.cellSize / 2 + "px");
         };
 
+        this.updateColours = function () {
+            // A noop, as css is already set by the selector
+        };
+
         function make_table(id, grid) {
             // Build the table
             var tbl     = document.createElement("table");
@@ -373,6 +394,104 @@ var life = function () {
             } else {
                 grid_tbody.childNodes[y].childNodes[x]
                     .className = "dead";
+            }
+        };
+    }
+
+    CanvasView.prototype = new View();
+    CanvasView.prototype.constructor = CanvasView;
+    function CanvasView (grid, cellSize) {
+        var self = this;
+        this.d_grid       = grid;
+
+        this.cellSize = cellSize || config.cell_size || 20;
+
+        var border_width  = 1; // between cells and on edges.
+        var border_colour = "#eee";
+
+        function drawGrid(grid) {
+            var canvas = self.canvas;
+
+            var d = self.draw;
+
+            for (x = 0; x < grid.width; ++x) {
+                for (y = 0; y < grid.height; ++y) {
+                    d.fillStyle = config.g_colour[grid[x][y] || 0];
+
+                    d.fillRect(border_width + x * (self.cellSize + border_width),
+                               border_width + y * (self.cellSize + border_width),
+                               self.cellSize, self.cellSize);
+                }
+            }
+        }
+
+        function makeCanvas () {
+            var canvas = $('<canvas id="grid-canvas">');
+            self.draw = canvas.get(0).getContext('2d');
+            self.canvas = canvas.get(0);
+        }
+
+        function setCanvasWidth () {
+            self.c_width  = border_width + self.d_grid.width  * (self.cellSize + border_width);
+            self.c_height = border_width + self.d_grid.height * (self.cellSize + border_width);
+            var canvas = self.canvas;
+            canvas.setAttribute("width",  self.c_width);
+            canvas.setAttribute("height", self.c_height);
+            clearCanvas();
+        }
+
+        function clearCanvas () {
+            self.draw.fillStyle = border_colour;
+            self.draw.fillRect(0, 0, self.c_width, self.c_height);
+        }
+
+        function canvasClickHandler (e) {
+            // Get click position relative to top left of the
+            // element clicked on
+            var px = (e.pageX - this.offsetLeft);
+            var py = (e.pageY - this.offsetTop);
+
+            // Determine which cell this is in
+            var x  = Math.floor(px / (self.cellSize + border_width));
+            var y  = Math.floor(py / (self.cellSize + border_width));
+
+            toggle_cell(x, y);
+        };
+
+        this.display = function () {
+            CanvasView.prototype.display();
+
+            makeCanvas();
+            setCanvasWidth();
+            clearCanvas();
+            drawGrid(this.d_grid);
+
+            self.canvas.onclick = canvasClickHandler;
+
+            $("#grid").append(self.canvas);
+        };
+
+        this.setCellSize = function (px) {
+            this.cellSize = px;
+            setCanvasWidth();
+
+            // Must be reclosed with new cell size
+            self.canvas.onclick = canvasClickHandler;
+
+            this.refreshGrid();
+        };
+
+        this.refreshGrid = function () {
+//            if (this.d_grid.size() != this.displayed_grid.size()) {
+            setCanvasWidth();
+            drawGrid(this.d_grid);
+        };
+
+        this.refreshCell = this.refreshGrid;
+
+        this.updateColours = function () {
+            if (self.canvas) {
+                self.drawGrid(self.d_grid);
             }
         };
     }
