@@ -1,3 +1,11 @@
+Process
+-------
+
+1. Check working copy clean.
+2. Write tests.
+3. Write code till test pass.
+4. Checkin
+
 Config - UI
        Grid Size
        Cell Size
