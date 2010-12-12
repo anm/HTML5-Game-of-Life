@@ -22,7 +22,7 @@ var life = function () {
 
     function load() {
         clock = new Clock(tick, config.period);
-        model  = new Model();
+        model = new Model();
         view  = new TableView(model.grid());
 
         view.display();
@@ -159,14 +159,7 @@ var life = function () {
                         rgb_to_hex($('.g' + generation).css('background-color')));
                 }
 
-                function bind_selector_to_generation_click_handler() {
-                    var j = i;
-                    return function () {
-                        bind_selector_to_generation(j);
-                    };
-                }
-
-                $('#colour-' + i).click(bind_selector_to_generation_click_handler());
+                $('#colour-' + i).click(curry(bind_selector_to_generation, i));
             }
 
             // Set initial swatch visibility to configured number of
@@ -540,20 +533,25 @@ var life = function () {
         return hex;
     }
 
+    /* method, arg1, arg2 ... */
     function curry(method) {
-        var curried = [];
-        for (var i = 1; i < arguments.length; i++) {
-            curried.push(arguments[i]);
+        if (! (method instanceof Function)) {
+            throw new Error("curry: first argument must be a Function");
         }
+
+        // Copy this functions arguments, excluding the first (the
+        // method) to curried, the list of arguments to curry.
+        var curried = Array.prototype.slice.call(arguments, 1);
+
         return function() {
-            var args = [];
-            for (var i = 0; i < curried.length; i++) {
-                args.push(curried[i]);
-            }
-            for (var i = 0; i < arguments.length; i++) {
-                args.push(arguments[i]);
-            }
-            return method.apply(null, args);
+            // The full argument list for the function will be built in args.
+            var args = curried.slice(0); // Start with all the curried args.
+
+            // Add the call time arguments
+            args = args.concat(arguments);
+
+            // .apply(this, args array)
+            return method.apply(this, args);
         };
     }
 
