@@ -3,8 +3,8 @@
 var life = function () {
 
     var config = {
-        numColumns          : 25,
-        numRows             : 30,
+        width               : 25,
+        height              : 30,
         period              : 200,
         cell_size           : 20, //px
         track_n_generations : 3, // Must be > 0.
@@ -233,9 +233,9 @@ var life = function () {
             var tbl     = document.createElement("table");
             var tblBody = document.createElement("tbody");
 
-            for (var y = 0; y < grid.numRows; y++) {
+            for (var y = 0; y < grid.height; y++) {
                 var row = document.createElement("tr");
-                for (var x = 0; x < grid.numColumns; ++x) {
+                for (var x = 0; x < grid.width; ++x) {
                     var cell = document.createElement("td");
 
                     if (grid[x][y]) {
@@ -276,8 +276,8 @@ var life = function () {
             }
             else {
                 // Grid size the same. Do an incremental update.
-                for (var x = 0; x < this.d_grid.numColumns; x++) {
-                    for (var y = 0; y < this.d_grid.numRows; y++) {
+                for (var x = 0; x < this.d_grid.width; x++) {
+                    for (var y = 0; y < this.d_grid.height; y++) {
 
                         // If there is a difference from current display, update
                         if ((this.d_grid[x][y]) != (this.displayed_grid[x][y])) {
@@ -321,9 +321,9 @@ var life = function () {
     Grid.prototype.constructor = Grid; // Set the "class" back to Grid
 
     Grid.prototype.copy = function () {
-        var n = new Grid(this.numColumns, this.numRows);
-        for (x = 0; x < this.numColumns; ++x) {
-            for (y = 0; y < this.numRows; ++y) {
+        var n = new Grid(this.width, this.height);
+        for (x = 0; x < this.width; ++x) {
+            for (y = 0; y < this.height; ++y) {
                 n[x][y] = this[x][y];
             }
         }
@@ -331,30 +331,30 @@ var life = function () {
     };
 
     Grid.prototype.size = function () {
-        return "(" + this.numColumns + ", " + this.numRows + ")";
+        return "(" + this.width + ", " + this.height + ")";
     };
 
     // The constructor
-    function Grid(numColumns, numRows) {
-        if (isNaN(Number(numColumns)) ||
-            isNaN(Number(numRows))) {
+    function Grid(width, height) {
+        if (isNaN(Number(width)) ||
+            isNaN(Number(height))) {
             throw new Error(
                 "Grid constructor requires two numerical dimensions");
         }
 
-        this.numColumns = numColumns;
-        this.numRows    = numRows;
+        this.width  = width;
+        this.height = height;
 
-        this.length = numColumns;
-        for (var x = 0; x < numColumns; ++x) {
-            this[x] = new Array(numRows);
+        this.length = width;
+        for (var x = 0; x < width; ++x) {
+            this[x] = new Array(height);
         }
     }
 
     function Model() {
         var that = this;
         function init() {
-            that.d_grid       = new Grid(config.numRows, config.numColumns);
+            that.d_grid       = new Grid(config.height, config.width);
             that.d_generation = 0;
         }
 
@@ -422,21 +422,21 @@ var life = function () {
 
                 if (config.wraparound) {
                     if (row < 0) {
-                        nrow = grid.numRows - 1;
+                        nrow = grid.height - 1;
                     }
-                    else if (row == grid.numRows) {
+                    else if (row == grid.height) {
                         nrow = 0;
                     }
 
                     if (column < 0) {
-                        ncolumn = grid.numColumns - 1;
+                        ncolumn = grid.width - 1;
                     }
-                    else if (column == grid.numColumns) {
+                    else if (column == grid.width) {
                         ncolumn = 0;
                     }
                 } else {
                     if( row < 0        || column < 0 ||
-                        row == grid.numRows || column == grid.numColumns) {
+                        row == grid.height || column == grid.width) {
                         // Off the edge
                         continue;
                     }
@@ -454,12 +454,12 @@ var life = function () {
             var ncolumn = column;
             if (config.wraparound) {
                 if (ncolumn < 0) {
-                    ncolumn = grid.numColumns - 1;
-                } else if (ncolumn == grid.numColumns) {
+                    ncolumn = grid.width - 1;
+                } else if (ncolumn == grid.width) {
                     ncolumn = 0;
                 }
             } else {
-                if (column < 0 || column == grid.numColumns) {
+                if (column < 0 || column == grid.width) {
                     continue;
                 }
             }
@@ -476,10 +476,10 @@ var life = function () {
      * Returns a Grid for the next generation of the supplied Grid.
      */
     function nextGeneration(grid) {
-        var ng = new Grid(grid.numColumns, grid.numRows);
+        var ng = new Grid(grid.width, grid.height);
 
-        for (var y = 0; y < grid.numRows; y++) {
-            for (var x = 0; x < grid.numColumns; x++) {
+        for (var y = 0; y < grid.height; y++) {
+            for (var x = 0; x < grid.width; x++) {
                 var sum = area_sum(grid, x, y);
 
                 var prev = grid[x][y] || 0;

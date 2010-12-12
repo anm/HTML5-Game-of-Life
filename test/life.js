@@ -11,13 +11,13 @@ test("test_Grid_instantiation", 12, function() {
 
     g[1][1] = 3;
     equal(g[1][1], 3, "Value stored and recovered.");
-    equal(g.numRows, 10, "numRows set ok");
-    equal(g.length, g.numRows, "length == numrows");
+    equal(g.height, 10, "height set ok");
+    equal(g.length, g.height, "length == numrows");
 
     var g2 = new Grid(5, 5);
     equal(g[1][1], 3, "Value still set after second object made");
-    equal(g.numRows, 10, "numRows still set ok");
-    equal(g2.numRows, 5, "numRows set ok");
+    equal(g.height, 10, "height still set ok");
+    equal(g2.height, 5, "height set ok");
 
     raises(function() {var g3 = new Grid()}, "Error with no args");
     raises(function() {var g3 = new Grid(0)}, "Error with one arg");
@@ -41,7 +41,7 @@ test("View", 12, function () {
     equal(v.generation(), 1, "Generation now 1");
 
     // Grid
-    var g  = new Grid(numColumns, numRows);
+    var g  = new Grid(width, height);
     ok(typeof v.grid() === 'undefined', "Get grid initially undefined");
     equal(v.grid(g), g, "Set grid returns new grid");
     equal(v.grid(), g, "Get grid returns new grid");
@@ -69,7 +69,7 @@ test("Run state text set correctly", 4, function() {
 });
 
 test("TableView", 11, function () {
-    var g  = new Grid(numColumns, numRows);
+    var g  = new Grid(width, height);
     var tv = new TableView(g);
 
     ok(tv instanceof TableView, "Type ok");
@@ -86,13 +86,13 @@ test("TableView", 11, function () {
     var cell = tbody.childNodes[y].childNodes[x];
 
     equal(cell.className, "dead", "Initially dead");
-    var g = new Grid(numColumns, numRows);
+    var g = new Grid(width, height);
     g[0][0] = 1;
     tv.grid(g);
     tv.refresh();
     equal(cell.className, "live g1", "New grid is shown");
 
-    var g = new Grid(numColumns, numRows);
+    var g = new Grid(width, height);
     g[0][0] = 0;
     tv.grid(g);
     tv.refresh();
@@ -118,7 +118,7 @@ test("TableView", 11, function () {
     tv.refresh();
     equal(cell.className, "live g2", "Modified grid works after refreshCell");
 
-    var g = new Grid(numColumns, numRows);
+    var g = new Grid(width, height);
     g[0][0] = 0;
     tv.grid(g);
     tv.refresh();
@@ -276,14 +276,14 @@ test("Edge wraparound UI", 3, function() {
 
 function grid_difference(grid, expected_grid) {
     /* Check grids are the same. Note any differences in err string */
-    if ((grid.numRows != expected_grid.numRows) ||
-        (grid.numColumns != expected_grid.numColumns)) {
+    if ((grid.height != expected_grid.height) ||
+        (grid.width != expected_grid.width)) {
         return "Grids are different sizes";
     }
 
     var err = "";
-    for (x = 0; x < grid.numRows; ++x) {
-        for (y = 0; y < grid.numColumns; ++y) {
+    for (x = 0; x < grid.height; ++x) {
+        for (y = 0; y < grid.width; ++y) {
             if (grid[x][y] !== expected_grid[x][y]) {
                 err += '(' + x + ',' + y + '): '
                     + 'expect:' + expected_grid[x][y]
@@ -393,7 +393,7 @@ test("Reset button", 5, function () {
     simulateClick(document.getElementById("reset"));
 
     /* Test clean */
-    var clean_grid = new Grid(numColumns, numRows);
+    var clean_grid = new Grid(width, height);
     var clean_table = make_table(1, clean_grid);
 
     deepEqual(grid, clean_grid, "grid reset");
@@ -418,7 +418,7 @@ test("Model", 11, function () {
     strictEqual(m.cell(0, 0), 0, "cell(0,0) gives 0");
     equal(m.cell(0,0,1), 1, "cell(0,0,1) gives 1");
     equal(m.cell(0,0), 1, "cell now set");
-    var g = new Grid(numColumns, numRows);
+    var g = new Grid(width, height);
     g[0][0] = 1;
     deepEqual(m.grid(), g, "Returned grid corresponds to cell results");
 
@@ -429,7 +429,7 @@ test("Model", 11, function () {
     strictEqual(m.cell(5,5), 0, "5,5 is 0 after reset");
     strictEqual(m.generation(), 0, "Generation 0 after reset");
     var g = m.grid();
-    var gclean = new Grid(numColumns, numRows);
+    var gclean = new Grid(width, height);
     deepEqual(g, gclean, "Returned grid is clean");
 
 
@@ -437,8 +437,8 @@ test("Model", 11, function () {
 
 test("Test Model.tick() and nextGeneration", 4, function() {
     wraparound = false;
-    numRows    = 10;
-    numColumns = 10;
+    height     = 10;
+    width      = 10;
 
     var m = new Model();
     var g = l.grid();
