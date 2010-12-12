@@ -3,8 +3,8 @@
 var life = function () {
 
     var config = {
-        numRows             : 10,
-        numColumns          : 10,
+        numColumns          : 25,
+        numRows             : 30,
         period              : 200,
         cell_size           : 20, //px
         track_n_generations : 3, // Must be > 0.
@@ -19,7 +19,6 @@ var life = function () {
 
 
     /* *********************** Controller ******************* */
-
 
     function load() {
         clock = new Clock(tick, config.period);
@@ -74,6 +73,7 @@ var life = function () {
 
 
     /* ********************** View ********************** */
+
     function View() {
         this.d_generation = 0;
         this.d_status     = "Stopped";
@@ -85,7 +85,7 @@ var life = function () {
                 this.d_grid = grid;
             }
             return this.d_grid;
-        }
+        };
 
         /* get / set and display */
         this.generation = function (gen) {
@@ -94,7 +94,7 @@ var life = function () {
                 $('#generation').text(this.d_generation);
             }
             return this.d_generation;
-        }
+        };
 
         /* get / set and display */
         this.status = function (status) {
@@ -103,7 +103,7 @@ var life = function () {
                 $('#status').html(this.d_status);
             }
             return this.d_status;
-        }
+        };
 
         /* Build the UI */
         this.display = function () {
@@ -129,7 +129,7 @@ var life = function () {
                               $("#speed").text(ui.value);
                               clock.setPeriod(ui.value);
                           }
-                      })
+                      });
               });
 
             $("#panels").accordion();
@@ -137,7 +137,7 @@ var life = function () {
             /* Colours */
             for (var i = 1; i <= config.max_generations; ++i) {
                 // Create style tag for custom colour
-                $('head').append('<style id="g' + i + '" type="text/css"></style>')
+                $('head').append('<style id="g' + i + '" type="text/css"></style>');
 
                 // Create swatches
                 $('#colour-pickers table').append(
@@ -147,12 +147,12 @@ var life = function () {
 
                 function set_generation_colour(generation, colour) {
                     $('#g' + generation).html('.g' + generation
-                                              + ' {background-color: ' + colour + '}')
+                                              + ' {background-color: ' + colour + '}');
                 }
 
                 function bind_selector_to_generation(generation) {
                     $.farbtastic('#colour-picker').linkTo(
-                        function(colour) {set_generation_colour(generation, colour)}
+                        function(colour) {set_generation_colour(generation, colour);}
                     );
 
                     $.farbtastic('#colour-picker').setColor(
@@ -163,7 +163,7 @@ var life = function () {
                     var j = i;
                     return function () {
                         bind_selector_to_generation(j);
-                    }
+                    };
                 }
 
                 $('#colour-' + i).click(bind_selector_to_generation_click_handler());
@@ -227,7 +227,7 @@ var life = function () {
             TableView.prototype.display();
             var table = make_table('1', grid);
             $("#grid").append(table);
-        }
+        };
 
         function make_table(id, grid) {
             // Build the table
@@ -249,7 +249,7 @@ var life = function () {
                                   var my_y = y;
 
                                   cell.onclick = function(){
-                                      toggle_cell(my_x,my_y)
+                                      toggle_cell(my_x,my_y);
                                   };})();
 
                     row.appendChild(cell);
@@ -283,7 +283,7 @@ var life = function () {
                     //                }
                 }
             }
-        }
+        };
 
         this.refreshCell = function (x, y) {
             var table      = document.getElementById("1");
@@ -296,7 +296,7 @@ var life = function () {
                 grid_tbody.childNodes[y].childNodes[x]
                     .className = "dead";
             }
-        }
+        };
     }
 
 
@@ -314,7 +314,7 @@ var life = function () {
             }
         }
         return n;
-    }
+    };
 
     // The constructor
     function Grid(numColumns, numRows) {
@@ -344,11 +344,11 @@ var life = function () {
 
         this.grid = function () {
             return this.d_grid;
-        }
+        };
 
         this.generation = function () {
             return this.d_generation;
-        }
+        };
 
         this.cell = function (x, y, generation) {
             if (!(x >= 0 &&
@@ -360,16 +360,16 @@ var life = function () {
                 this.d_grid[x][y] = generation;
             }
             return this.d_grid[x][y] || 0;
-        }
+        };
 
         this.reset = function () {
             init();
-        }
+        };
 
         this.tick = function () {
             this.d_grid = nextGeneration(this.d_grid);
             ++this.d_generation;
-        }
+        };
     }
     /* Take the generation number of a cell and the number of neighbours it has.
      * Return true if the cell is to live in the next generation.
@@ -530,7 +530,7 @@ var life = function () {
                 args.push(arguments[i]);
             }
             return method.apply(null, args);
-        }
+        };
     }
 
     /* A clock in the electronics sense.
@@ -547,7 +547,7 @@ var life = function () {
                 this.stop();
                 this.start();
             }
-        }
+        };
 
         this.start = function () {
             if (this.timer === null) {
