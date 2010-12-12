@@ -9,6 +9,7 @@ var life = function () {
         maxHeight           : 50,
         period              : 200,
         cell_size           : 20, //px
+        max_cell_size       : 50,
         track_n_generations : 3, // Must be > 0.
         max_generations     : 10,
         wraparound          : false
@@ -82,6 +83,10 @@ var life = function () {
         model.setHeight(y);
         view.grid(model.grid());
         view.refresh();
+    }
+
+    function setCellSize (px) {
+        view.setCellSize(px);
     }
 
     /* ********************** View ********************** */
@@ -170,6 +175,17 @@ var life = function () {
                                           }
                                       });
 
+            $("#cellSize-slider").slider({
+                                          range: "min",
+                                          value: config.cell_size,
+                                          min: 2,
+                                          max: config.max_cell_size,
+                                          slide: function (event, ui) {
+                                              config.cell_size = ui.value;
+                                              setCellSize(config.cell_size);
+                                          }
+                                      });
+
 
             $("#panels").accordion();
 
@@ -254,18 +270,26 @@ var life = function () {
 
     TableView.prototype = new View();
     TableView.prototype.constructor = TableView;
-    function TableView (grid) {
+    function TableView (grid, cellSize) {
+        var self = this;
         this.d_grid       = grid;
 
         // A cache of the currently displayed grid
         // Used to optimise drawing by only drawing what has changed
         this.displayed_grid;
 
+        this.cellSize = cellSize || config.cell_size || 20;
+
         this.display = function () {
             TableView.prototype.display();
             var table = make_table('1', this.d_grid);
             $("#grid").append(table);
             this.displayed_grid = this.d_grid.copy();
+        };
+
+        this.setCellSize = function (px) {
+            this.cellSize = px;
+            $('#1').get(0).setAttribute("cellpadding", this.cellSize / 2 + "px");
         };
 
         function make_table(id, grid) {
@@ -299,7 +323,7 @@ var life = function () {
 
             tbl.setAttribute("border", "2");
             tbl.setAttribute("rules", "all");
-            tbl.setAttribute("cellpadding", config.cell_size / 2 + "px");
+            tbl.setAttribute("cellpadding", self.cellSize / 2 + "px");
             tbl.setAttribute("id", id);
 
             return tbl;
