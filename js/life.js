@@ -223,10 +223,15 @@ var life = function () {
     function TableView (grid) {
         this.d_grid       = grid;
 
+        // A cache of the currently displayed grid
+        // Used to optimise drawing by only drawing what has changed
+        this.displayed_grid;
+
         this.display = function () {
             TableView.prototype.display();
             var table = make_table('1', grid);
             $("#grid").append(table);
+            this.displayed_grid = grid.copy();
         };
 
         function make_table(id, grid) {
@@ -270,17 +275,29 @@ var life = function () {
             var table = document.getElementById("1");
             var grid_tbody = table.getElementsByTagName("tbody")[0];
 
-            for (var x = 0; x < this.d_grid.numColumns; x++) {
-                for (var y = 0; y < this.d_grid.numRows; y++) {
-                    //                if ((this.d_grid[x][y]) != (this.d_prev_grid[x][y])) {
-                    if (this.d_grid[x][y]) {
-                        grid_tbody.childNodes[y].childNodes[x]
-                            .className = "live " + "g" + this.d_grid[x][y];
-                    } else {
-                        grid_tbody.childNodes[y].childNodes[x]
-                            .className = "dead";
+            if (this.d_grid.size() != this.displayed_grid.size()) {
+                // Grid size has changed. Redraw table.
+                table.parent.replaceChild(make_table('1', this.d_grid), table);
+                this.diplayed_grid = grid.copy();
+            }
+            else {
+                // Grid size the same. Do an incremental update.
+                for (var x = 0; x < this.d_grid.numColumns; x++) {
+                    for (var y = 0; y < this.d_grid.numRows; y++) {
+
+                        // If there is a difference from current display, update
+                        if ((this.d_grid[x][y]) != (this.displayed_grid[x][y])) {
+                            // Update displayed_grid cache.
+                            this.displayed_grid[x][y] = this.d_grid[x][y];
+                            if (this.d_grid[x][y]) {
+                                grid_tbody.childNodes[y].childNodes[x]
+                                    .className = "live " + "g" + this.d_grid[x][y];
+                            } else {
+                                grid_tbody.childNodes[y].childNodes[x]
+                                    .className = "dead";
+                            }
+                        }
                     }
-                    //                }
                 }
             }
         };
@@ -288,6 +305,9 @@ var life = function () {
         this.refreshCell = function (x, y) {
             var table      = document.getElementById("1");
             var grid_tbody = table.getElementsByTagName("tbody")[0];
+
+            // Update display cache
+            this.displayed_grid[x][y] = this.d_grid[x][y];
 
             if (this.d_grid[x][y]) {
                 grid_tbody.childNodes[y].childNodes[x]
@@ -314,6 +334,10 @@ var life = function () {
             }
         }
         return n;
+    };
+
+    Grid.prototype.size = function () {
+        return "(" + this.numColumns + ", " + this.numRows + ")";
     };
 
     // The constructor
