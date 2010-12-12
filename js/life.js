@@ -71,7 +71,6 @@ var life = function () {
     }
 
 
-
     /* ********************** View ********************** */
 
     function View() {
@@ -134,7 +133,22 @@ var life = function () {
 
             $("#panels").accordion();
 
-            /* Colours */
+            /**** Colours ****/
+
+            function set_generation_colour(generation, colour) {
+                $('#g' + generation).html('.g' + generation
+                                          + ' {background-color: ' + colour + '}');
+            }
+
+            function bind_selector_to_generation(generation) {
+                $.farbtastic('#colour-picker').linkTo(
+                    function (colour) {set_generation_colour(generation, colour);}
+                );
+
+                $.farbtastic('#colour-picker').setColor(
+                    rgb_to_hex($('.g' + generation).css('background-color')));
+            }
+
             for (var i = 1; i <= config.max_generations; ++i) {
                 // Create style tag for custom colour
                 $('head').append('<style id="g' + i + '" type="text/css"></style>');
@@ -145,29 +159,24 @@ var life = function () {
                         + '" class="swatch g' + i + '"></td></tr>'
                 );
 
-                function set_generation_colour(generation, colour) {
-                    $('#g' + generation).html('.g' + generation
-                                              + ' {background-color: ' + colour + '}');
-                }
-
-                function bind_selector_to_generation(generation) {
-                    $.farbtastic('#colour-picker').linkTo(
-                        function(colour) {set_generation_colour(generation, colour);}
-                    );
-
-                    $.farbtastic('#colour-picker').setColor(
-                        rgb_to_hex($('.g' + generation).css('background-color')));
-                }
-
                 $('#colour-' + i).click(curry(bind_selector_to_generation, i));
+            }
+
+            $('#colour-picker').farbtastic();
+            bind_selector_to_generation(1);
+
+            function set_swatch_visibility() {
+                for (var i = 1; i <= config.track_n_generations; ++i) {
+                    $('#colour-and-label-' + i).css('visibility', 'visible');
+                }
+                for (var i = config.track_n_generations + 1; i <= config.max_generations; ++i) {
+                    $('#colour-and-label-' + i).css('visibility', 'hidden');
+                }
             }
 
             // Set initial swatch visibility to configured number of
             // generations to colour.
             set_swatch_visibility();
-
-            $('#colour-picker').farbtastic();
-            bind_selector_to_generation(1);
 
             $('#no-of-colours-slider').slider({
                                                   value: config.track_n_generations,
@@ -182,14 +191,6 @@ var life = function () {
                                                   }
                                               });
 
-            function set_swatch_visibility() {
-                for (var i = 1; i <= config.track_n_generations; ++i) {
-                    $('#colour-and-label-' + i).css('visibility', 'visible');
-                }
-                for (var i = config.track_n_generations + 1; i <= config.max_generations; ++i) {
-                    $('#colour-and-label-' + i).css('visibility', 'hidden');
-                }
-            }
 
             $('#wraparound-p').click(function () {
                                          if (this.checked) {
@@ -585,7 +586,7 @@ var life = function () {
         };
     }
 
-
+    /* Public methods / properties */
     return {
         load: load,
         reset: reset,
@@ -594,8 +595,6 @@ var life = function () {
         stop: stop,
         toggle_cell: toggle_cell
     };
-
 }();
 
 window.onload = life.load;
-
