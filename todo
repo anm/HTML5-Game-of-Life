@@ -1,11 +1,9 @@
-Clean up code
-Optimise display
 Config - UI
-       Rules
        Grid Size
        Cell Size
        Table or Canvas
        Save / Load Games
+       Rules
 
 Auto-sizing
 HTML5 Canvas
