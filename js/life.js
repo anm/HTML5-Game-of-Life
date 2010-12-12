@@ -561,7 +561,7 @@ var life = function () {
     function Model() {
         var that = this;
         function init() {
-            that.d_grid       = new Grid(config.height, config.width);
+            that.d_grid       = new Grid(config.width, config.height);
             that.d_generation = 0;
         }
 
