@@ -208,7 +208,11 @@ var life = function () {
                                       });
 
 
-            $("#panels").accordion();
+            $("#panels").dialog({autoOpen: false, width: 450,
+                                open: function () {$("#panels").accordion(); }});
+            $("#show-settings").click(function () {$("#panels").dialog('open')});
+
+
 
             /**** Colours ****/
 

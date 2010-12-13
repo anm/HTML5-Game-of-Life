@@ -33,7 +33,6 @@ href="css/life.css" rel="stylesheet" />
 
 </head>
 
-
 <body>
 <div id="controls">
   <div id="buttons">
@@ -41,8 +40,8 @@ href="css/life.css" rel="stylesheet" />
     <input type="button" id="start" value="Start" />
     <input type="button" id="stop" value="Stop" />
     <input type="button" id="reset" value="Reset" />
+    <a id="show-settings" href="#">Settings</a>
   </div>
-
   <div id="speed-slider"></div>
 </div>
 
@@ -50,9 +49,11 @@ href="css/life.css" rel="stylesheet" />
   <span id="speed-display">Update: <span id="speed"></span>ms</span>
   <span id="generation-display">Generation: <span id="generation"></span></span>
   <span id="status">Stopped</span>
- </div>
+</div>
 
-<div id="panels">
+<div id="grid"></div>
+
+<div id="panels" title="Settings">
   <h3><a href="#">Colour</a></h3>
   <div id="colour-panel">
     How many generations do you want to colour?
@@ -104,8 +105,6 @@ href="css/life.css" rel="stylesheet" />
   <div>
   </div>
 </div>
-
-<div id="grid"></div>
 
 <script src="js/life.js"></script>
 
