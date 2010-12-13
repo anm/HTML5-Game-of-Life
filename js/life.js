@@ -145,6 +145,15 @@ var life = function () {
             return this.d_status;
         };
 
+        /* Make cells slightly bigger on iPad because touch interface
+         * is less precise than cursor. Not doing it on iPod or other
+         * mobiles because their screens are so small that bigger
+         * cells would make grid too much smaller I think.
+         */
+        if(navigator.userAgent && navigator.userAgent.match("iPad")) {
+            config.cell_size += 2;
+        }
+
         /* Build the UI */
         this.display = function () {
             $("#tick").click(life.tick);
