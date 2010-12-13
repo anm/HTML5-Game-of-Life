@@ -37,6 +37,8 @@ var life = function () {
     var model;
     var view;
 
+    // State for drawing functions
+    var drawing = {};
 
     /* *********************** Controller ******************* */
 
@@ -154,6 +156,70 @@ var life = function () {
             config.cell_size += 2;
         }
 
+        /* Returns the cell index as an object with fields x and y.
+         * Returns null if the position is outside the grid.
+         * toString returns (x,y)
+         */
+        function getCellAtEventPosition (event) {
+            // Get click position relative to top left of the
+            // element clicked on (the grid)
+            var grid = $('#grid');
+            var px = (event.pageX - grid.offset().left);
+            var py = (event.pageY - grid.offset().top);
+
+            var cellOffset = config.cell_size + config.border_width;
+
+            // Determine which cell this is in
+            var x = Math.floor(px / cellOffset);
+            var y = Math.floor(py / cellOffset);
+
+            // Check for outside grid
+            if ((x < 0) || (y < 0) ||
+                (x >= config.width) || (y >= config.height)) {
+                return null;
+            }
+
+            var cell = {x: x, y: y};
+            cell.toString = function () {return '(' + x + ',' + y + ')'};
+            return cell;
+        }
+
+        /* Drawing Functions */
+        function gridMouseDown (event) {
+            // Start Drawing
+
+            // Bind to document to capture moving outside the grid
+            $(document).bind('mousemove', gridMouseMove);
+
+            var cell = getCellAtEventPosition(event);
+            life.drawing.incell = cell;
+            toggle_cell(cell.x, cell.y);
+
+            // Prevent browser trying to select stuff
+            return false;
+        }
+
+        function gridMouseUp (event) {
+            $(document).unbind('mousemove');
+        }
+
+        function gridMouseMove (event) {
+            var cell = getCellAtEventPosition(event);
+
+            // If moved outside grid, stop drawing
+            if (cell == null) {
+                gridMouseUp();
+                return false;
+            }
+
+            if (cell.toString() != life.drawing.incell.toString()) {
+                // Pointer moved into another cell
+                life.drawing.incell = cell;
+                toggle_cell(cell.x, cell.y);
+            }
+            return false;
+        }
+
         /* Build the UI */
         this.display = function () {
             $("#tick").click(life.tick);
@@ -230,7 +296,8 @@ var life = function () {
                                           }
                                       });
 
-
+            $('#grid').bind('mousedown', gridMouseDown);
+            $('#grid').bind('mouseup'  , gridMouseUp);
 
             /**** Colours ****/
 
@@ -409,14 +476,6 @@ var life = function () {
                     } else {
                         cell.className = "dead";
                     }
-
-                    (function () {var my_x = x;
-                                  var my_y = y;
-
-                                  cell.onclick = function(){
-                                      toggle_cell(my_x,my_y);
-                                  };})();
-
                     row.appendChild(cell);
                 }
                 tblBody.appendChild(row);
@@ -527,19 +586,6 @@ var life = function () {
             self.draw.fillRect(0, 0, self.c_width, self.c_height);
         }
 
-        function canvasClickHandler (e) {
-            // Get click position relative to top left of the
-            // element clicked on
-            var px = (e.pageX - this.offsetLeft);
-            var py = (e.pageY - this.offsetTop);
-
-            // Determine which cell this is in
-            var x  = Math.floor(px / (self.cellSize + border_width));
-            var y  = Math.floor(py / (self.cellSize + border_width));
-
-            toggle_cell(x, y);
-        };
-
         this.display = function () {
             CanvasView.prototype.display();
 
@@ -548,17 +594,12 @@ var life = function () {
             clearCanvas();
             drawGrid(this.d_grid);
 
-            self.canvas.onclick = canvasClickHandler;
-
             $("#grid").append(self.canvas);
         };
 
         this.setCellSize = function (px) {
             this.cellSize = px;
             setCanvasWidth();
-
-            // Must be reclosed with new cell size
-            self.canvas.onclick = canvasClickHandler;
 
             this.refreshGrid();
         };
@@ -891,7 +932,8 @@ var life = function () {
         stop: stop,
         toggle_cell: toggle_cell,
 
-        config: config
+        config: config,
+        drawing: drawing
     };
 }();
 
