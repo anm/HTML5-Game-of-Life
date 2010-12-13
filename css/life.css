@@ -7,17 +7,6 @@ body {
 .live { background-color: #fff }
 .dead { background-color: #000 }
 
-.g1  { background-color: #0f0 }
-.g2  { background-color: #ff0 }
-.g3  { background-color: #f00 }
-.g4  { background-color: #0ff }
-.g5  { background-color: #00f }
-.g6  { background-color: #0f0 }
-.g7  { background-color: #ff0 }
-.g8  { background-color: #f00 }
-.g9  { background-color: #0ff }
-.g10 { background-color: #00f }
-
 #speed-display {
     float: left;
     margin-right: 1em;

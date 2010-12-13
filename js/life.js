@@ -212,11 +212,15 @@ var life = function () {
 
             /**** Colours ****/
 
+            function set_generation_css_colour (generation, colour) {
+                $('#g' + generation).html('.g' + generation
+                                          + ' {background-color: ' + colour + '}');
+            }
+
             function bind_selector_to_generation(generation) {
                 $.farbtastic('#colour-picker').linkTo(
                     function (colour) {
-                        $('#g' + generation).html('.g' + generation
-                                                  + ' {background-color: ' + colour + '}');
+                        set_generation_css_colour(generation, colour);
                         setGenerationColour(generation, colour);
                     });
 
@@ -227,6 +231,9 @@ var life = function () {
             for (var i = 1; i <= config.max_generations; ++i) {
                 // Create style tag for custom colour
                 $('head').append('<style id="g' + i + '" type="text/css"></style>');
+
+                // Set initial colour (from config)
+                set_generation_css_colour(i, config.g_colour[i]);
 
                 // Create swatches
                 $('#colour-pickers table').append(
