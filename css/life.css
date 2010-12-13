@@ -12,6 +12,10 @@ body {
     margin-bottom: 5px;
 }
 
+#buttons * {
+    font-size: 120%;
+}
+
 #speed-slider {
     width: 30em;
     margin-top: 10px;
