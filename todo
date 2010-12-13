@@ -1,10 +1,13 @@
 Process
--------
+=======
 
 1. Check working copy clean.
 2. Write tests.
 3. Write code till test pass.
 4. Checkin
+
+Features
+========
 
 Config - UI
        Table or Canvas
@@ -12,7 +15,6 @@ Config - UI
        Rules
 
 Get working on iOS again
-    - Make buttons bigger
     - Make cells slightly bigger
     - Sizing for iPod: Dynamically size speed bar and settings dialog.
 
@@ -26,6 +28,15 @@ Rules
 Save Config
 Save state between reloads
 Statistics - e.g. population graph over time
+
+
+Bugs
+====
+
+autoConfigSize: height seems to be read before rendering complete -
+                button text size bigger moved it down more.
+
+Wonky accordion. :-)
 
 
 QUnit patches:
