@@ -212,7 +212,14 @@ var life = function () {
 
             $("#panels").dialog({autoOpen: false, width: 450,
                                 open: function () {$("#panels").accordion(); }});
-            $("#show-settings").click(function () {$("#panels").dialog('open')});
+
+            $("#show-settings").click(function () {
+                                          if ($("#panels").dialog('isOpen')) {
+                                              $("#panels").dialog('close');
+                                          } else {
+                                              $("#panels").dialog('open');
+                                          }
+                                      });
 
 
 
