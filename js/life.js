@@ -560,19 +560,21 @@ var life = function () {
         var border_width  = config.border_width; // between cells and on edges.
         var border_colour = config.border_colour;
 
-        function drawGrid(grid) {
-            var canvas = self.canvas;
-
-            var d = self.draw;
+        function drawCell(x, y) {
+            var d      = self.draw;
             var offset = self.cellSize + border_width;
 
+            d.fillStyle = config.g_colour[self.d_grid[x][y] || 0];
+
+            d.fillRect(border_width + x * offset,
+                       border_width + y * offset,
+                       self.cellSize, self.cellSize);
+        }
+
+        function drawGrid(grid) {
             for (x = 0; x < grid.width; ++x) {
                 for (y = 0; y < grid.height; ++y) {
-                    d.fillStyle = config.g_colour[grid[x][y] || 0];
-
-                    d.fillRect(border_width + x * offset,
-                               border_width + y * offset,
-                               self.cellSize, self.cellSize);
+                    drawCell(x, y);
                 }
             }
         }
@@ -620,7 +622,7 @@ var life = function () {
             drawGrid(this.d_grid);
         };
 
-        this.refreshCell = this.refreshGrid;
+        this.refreshCell = drawCell;
 
         this.updateColours = function () {
             if (self.canvas) {
