@@ -25,7 +25,9 @@ var life = function () {
                                '#f00',
                                '#0ff',
                                '#00f', // g10
-                              ]
+                              ],
+        border_colour      : '#444',
+        border_width       : 1
     };
 
     /* Global State */
@@ -300,6 +302,10 @@ var life = function () {
         this.display = function () {
             TableView.prototype.display();
             var table = make_table('1', this.d_grid);
+
+            $('head').append('<style type="text/css">#grid table {border-color: '
+                             + config.border_colour + ';}</style>');
+
             $("#grid").append(table);
             this.displayed_grid = this.d_grid.copy();
         };
@@ -342,7 +348,7 @@ var life = function () {
             }
             tbl.appendChild(tblBody);
 
-            tbl.setAttribute("border", "2");
+            tbl.setAttribute("border", config.border_width);
             tbl.setAttribute("rules", "all");
             tbl.setAttribute("cellpadding", self.cellSize / 2 + "px");
             tbl.setAttribute("id", id);
@@ -406,8 +412,8 @@ var life = function () {
 
         this.cellSize = cellSize || config.cell_size || 20;
 
-        var border_width  = 1; // between cells and on edges.
-        var border_colour = "#eee";
+        var border_width  = config.border_width; // between cells and on edges.
+        var border_colour = config.border_colour;
 
         function drawGrid(grid) {
             var canvas = self.canvas;
