@@ -15,8 +15,7 @@ Config - UI
        Rules
 
 Get working on iOS again
-    - Make cells slightly bigger
-    - Sizing for iPod: Dynamically size speed bar and settings dialog.
+    - Sizing for iPod: Dynamically size settings dialog.
 
 Continuous drawing / erasing on mousedown
 Random initilisation
