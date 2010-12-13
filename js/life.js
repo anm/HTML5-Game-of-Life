@@ -193,6 +193,13 @@ var life = function () {
 
             var cell = getCellAtEventPosition(event);
             life.drawing.incell = cell;
+
+            if (model.cell(cell.x, cell.y)) {
+                life.drawing.drawmode = 0;
+            } else {
+                life.drawing.drawmode = 1;
+            }
+
             toggle_cell(cell.x, cell.y);
 
             // Prevent browser trying to select stuff
@@ -215,7 +222,11 @@ var life = function () {
             if (cell.toString() != life.drawing.incell.toString()) {
                 // Pointer moved into another cell
                 life.drawing.incell = cell;
-                toggle_cell(cell.x, cell.y);
+
+                // Draw cell
+                model.cell(cell.x, cell.y, life.drawing.drawmode);
+                view.grid(model.grid());
+                view.refreshCell(cell.x, cell.y);
             }
             return false;
         }
