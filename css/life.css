@@ -7,10 +7,19 @@ body {
 .live { background-color: #fff }
 .dead { background-color: #000 }
 
+#buttons {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+#speed-slider {
+    width: 30em;
+    margin-top: 10px;
+}
+
 #speed-display {
-    float: left;
     margin-right: 1em;
-    min-width: 8em;
+    min-width: 8.2em;
 }
 
 #speed {
@@ -18,23 +27,15 @@ body {
 }
 
 #generation-display {
-    float: left;
     margin-right: 1em;
 }
 
 #status-display {
-    clear: right;
+    margin-top: 10px;
 }
 
 #grid {
-    float: left;
-    margin-left: 10px;
-}
 
-#panels {
-    width: 450px;
-    margin-left: 20px;
-    float: left;
 }
 
 .config-section {
@@ -51,9 +52,9 @@ body {
     font-size: 120%;
 }
 
-/* The control panel pane */
-#colour-panel {
-    height: 330px;
+#panels > div {
+    width: 330px;
+    height: 360px;
 }
 
 #no-of-colours-slider {
