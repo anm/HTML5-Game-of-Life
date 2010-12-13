@@ -5,6 +5,8 @@ var life = function () {
     var config = {
         width               : 25,
         height              : 30,
+        minAutoWidth        : 3,
+        minAutoHeight       : 3,
         maxWidth            : 50,
         maxHeight           : 50,
         period              : 200,
@@ -286,6 +288,43 @@ var life = function () {
                                          }
                                      }).get(0).checked = config.wraparound;
         };
+
+        function autoConfigSize () {
+            // Get available space
+            // Divide by cell offset (size + border) for number of cells
+            // Subtract one cell to give some border (and because it
+            // was too big for some unknown reason)
+
+            var left = $("#grid").get(0).offsetLeft;
+            var top  = $("#grid").get(0).offsetTop;
+
+            var width = Math.floor(($(window).width() - left) /
+                                   (config.cell_size + config.border_width)) - 1;
+
+            var height = Math.floor(($(window).height() - top) /
+                                    (config.cell_size + config.border_width)) - 1;
+
+            var minWidth  = config.minAutoWidth;
+            var minHeight = config.minAutoHeight;
+            var maxWidth  = config.maxWidth;
+            var maxHeight = config.maxHeight;
+
+            if (width < minWidth) {
+                width = minWidth;
+            } else if (width > maxWidth) {
+                width = maxWidth;
+            }
+            config.width = width;
+
+            if (height < minHeight) {
+                height = minHeight;
+            } else if (height > maxHeight) {
+                height = maxHeight;
+            }
+            config.height = height;
+        }
+
+        autoConfigSize();
 
         this.refreshGrid = function () {
             alert("View is an abstract class."
