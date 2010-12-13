@@ -14,7 +14,7 @@ var life = function () {
         max_cell_size       : 50,
         track_n_generations : 3, // Must be > 0.
         max_generations     : 10,
-        wraparound          : false,
+        wraparound          : true,
 
         g_colour            : ['#000', // dead
                                '#0f0', // g1
