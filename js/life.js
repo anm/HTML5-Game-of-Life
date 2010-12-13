@@ -504,7 +504,7 @@ var life = function () {
 
         this.updateColours = function () {
             if (self.canvas) {
-                self.drawGrid(self.d_grid);
+                drawGrid(self.d_grid);
             }
         };
     }
