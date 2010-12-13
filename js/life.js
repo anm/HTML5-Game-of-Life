@@ -469,13 +469,14 @@ var life = function () {
             var canvas = self.canvas;
 
             var d = self.draw;
+            var offset = self.cellSize + border_width;
 
             for (x = 0; x < grid.width; ++x) {
                 for (y = 0; y < grid.height; ++y) {
                     d.fillStyle = config.g_colour[grid[x][y] || 0];
 
-                    d.fillRect(border_width + x * (self.cellSize + border_width),
-                               border_width + y * (self.cellSize + border_width),
+                    d.fillRect(border_width + x * offset,
+                               border_width + y * offset,
                                self.cellSize, self.cellSize);
                 }
             }
@@ -538,7 +539,6 @@ var life = function () {
         };
 
         this.refreshGrid = function () {
-//            if (this.d_grid.size() != this.displayed_grid.size()) {
             setCanvasWidth();
             drawGrid(this.d_grid);
         };
