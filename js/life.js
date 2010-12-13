@@ -333,6 +333,15 @@ var life = function () {
 
         autoConfigSize();
 
+        /* For iOS.
+         * Recalculate grid size when device is rotated.
+         */
+        window.onorientationchange = function () {
+            autoConfigSize();
+            setGridWidth(config.width);
+            setGridHeight(config.height);
+        };
+
         this.refreshGrid = function () {
             alert("View is an abstract class."
                   + "You have called a method that must be overridden.");

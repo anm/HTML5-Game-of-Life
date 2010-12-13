@@ -11,11 +11,19 @@ Config - UI
        Save / Load Games
        Rules
 
+Get working on iOS again
+    - Make buttons bigger
+    - Make cells slightly bigger
+    - Sizing for iPod: Dynamically size speed bar and settings dialog.
+
+Continuous drawing / erasing on mousedown
+Random initilisation
+Pattern Library
+Zoom (use pinch action)
 Offline Application Cache
 WebWorkers
 Rules
-Pattern Library
-Zoom (use pinch action)
+Save Config
 Save state between reloads
 Statistics - e.g. population graph over time
 
