@@ -26,7 +26,7 @@ var life = function () {
                                '#ff0',
                                '#f00',
                                '#0ff',
-                               '#00f', // g10
+                               '#00f' // g10
                               ],
         border_colour      : '#444',
         border_width       : 1
