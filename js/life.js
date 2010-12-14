@@ -58,7 +58,7 @@ var life = function () {
         view.status("Stopped");
         view.generation(model.generation());
         view.grid(model.grid());
-        view.refresh();
+        view.refreshGrid();
     }
 
     /* Compute and display the next generation of grid. */
@@ -67,7 +67,7 @@ var life = function () {
 
         view.generation(model.generation());
         view.grid(model.grid());
-        view.refresh();
+        view.refreshGrid();
     }
 
     /* N.B. start and stop function names clash with qunit */
@@ -95,13 +95,13 @@ var life = function () {
     function setGridWidth(x) {
         model.setWidth(x);
         view.grid(model.grid());
-        view.refresh();
+        view.refreshGrid();
     }
 
     function setGridHeight(y) {
         model.setHeight(y);
         view.grid(model.grid());
-        view.refresh();
+        view.refreshGrid();
     }
 
     function setCellSize (px) {
@@ -433,11 +433,6 @@ var life = function () {
             alert("View is an abstract class."
                   + "You have called a method that must be overridden.");
         };
-
-        this.refresh = function () {
-            this.refreshGrid();
-            // Possibly other things to go here
-        };
     }
 
     TableView.prototype = new View();
@@ -553,9 +548,10 @@ var life = function () {
     CanvasView.prototype.constructor = CanvasView;
     function CanvasView (grid, cellSize) {
         var self = this;
-        this.d_grid       = grid;
 
-        this.cellSize = cellSize || config.cell_size || 20;
+        self.d_grid         = grid;
+
+        self.cellSize = cellSize || config.cell_size || 20;
 
         var border_width  = config.border_width; // between cells and on edges.
         var border_colour = config.border_colour;
@@ -571,10 +567,18 @@ var life = function () {
                        self.cellSize, self.cellSize);
         }
 
-        function drawGrid(grid) {
-            for (x = 0; x < grid.width; ++x) {
-                for (y = 0; y < grid.height; ++y) {
-                    drawCell(x, y);
+        // Full redraw if full true, else incremental update
+        function drawGrid(full) {
+            // If there is a difference from current display, update
+
+            for (x = 0; x < self.d_grid.width; ++x) {
+                for (y = 0; y < self.d_grid.height; ++y) {
+                    if (full || (self.d_grid[x][y]) != (self.displayed_grid[x][y])) {
+                        // Update displayed_grid cache.
+                        self.displayed_grid[x][y] = self.d_grid[x][y];
+
+                        drawCell(x, y);
+                    }
                 }
             }
         }
@@ -599,34 +603,44 @@ var life = function () {
             self.draw.fillRect(0, 0, self.c_width, self.c_height);
         }
 
-        this.display = function () {
+        self.display = function () {
             CanvasView.prototype.display();
 
             makeCanvas();
             setCanvasWidth();
             clearCanvas();
-            drawGrid(this.d_grid);
+
+            self.displayed_grid = grid.copy();
+            drawGrid(true);
 
             $("#grid").append(self.canvas);
         };
 
-        this.setCellSize = function (px) {
-            this.cellSize = px;
+        self.setCellSize = function (px) {
+            self.cellSize = px;
             setCanvasWidth();
 
-            this.refreshGrid();
+            drawGrid(true);
         };
 
-        this.refreshGrid = function () {
-            setCanvasWidth();
-            drawGrid(this.d_grid);
+        self.refreshGrid = function () {
+            if (self.displayed_grid.size() != self.d_grid.size()) {
+                self.displayed_grid = self.d_grid.copy();
+                setCanvasWidth();
+                drawGrid(true);
+            }
+            drawGrid();
         };
 
-        this.refreshCell = drawCell;
+        self.refreshCell = function (x, y) {
+            // Update displayed_grid cache.
+            self.displayed_grid[x][y] = self.d_grid[x][y];
+            drawCell(x, y);
+        };
 
-        this.updateColours = function () {
+        self.updateColours = function () {
             if (self.canvas) {
-                drawGrid(self.d_grid);
+                drawGrid(true);
             }
         };
     }
