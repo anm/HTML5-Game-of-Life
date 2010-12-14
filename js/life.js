@@ -589,7 +589,7 @@ var life = function () {
             self.canvas = canvas.get(0);
         }
 
-        function setCanvasWidth () {
+        function setCanvasSize () {
             self.c_width  = border_width + self.d_grid.width  * (self.cellSize + border_width);
             self.c_height = border_width + self.d_grid.height * (self.cellSize + border_width);
             var canvas = self.canvas;
@@ -607,7 +607,7 @@ var life = function () {
             CanvasView.prototype.display();
 
             makeCanvas();
-            setCanvasWidth();
+            setCanvasSize();
             clearCanvas();
 
             self.displayed_grid = grid.copy();
@@ -618,7 +618,7 @@ var life = function () {
 
         self.setCellSize = function (px) {
             self.cellSize = px;
-            setCanvasWidth();
+            setCanvasSize();
 
             drawGrid(true);
         };
@@ -626,7 +626,7 @@ var life = function () {
         self.refreshGrid = function () {
             if (self.displayed_grid.size() != self.d_grid.size()) {
                 self.displayed_grid = self.d_grid.copy();
-                setCanvasWidth();
+                setCanvasSize();
                 drawGrid(true);
             }
             drawGrid();
