@@ -14,18 +14,38 @@ Config - UI
        Save / Load Games
        Rules
 
+Usability study notes
+---------------------
+Label sliders
+Make slide action more obvious - arrow on slider, like bidirectional unlock?
+Remove min highlight on slider.
+Restrict slider end movement or at least add sufficient margin to allow for it
+Relabel / explain update speed.
+Attempted to drag resize grid.
+Explain generation colours, possibly rename. Generation could mean
+child is next colour, parent stays same.
+Add a reference point / cursor?
+
+Turn into a game.
+
+
+
 Get working on iOS again
     - Sizing for iPod: Dynamically size settings dialog.
+Rename tick to step?
+Bigger settings link, possibly button.
+Bigger close button.
+Bigger checkbox.
 
-Continuous drawing / erasing on mousedown
-Random initilisation
-Pattern Library
-Zoom (use pinch action)
-Offline Application Cache
-WebWorkers
-Rules
+Productify for release
 Save Config
 Save state between reloads
+Import / export grids
+Pattern Library
+Zoom (use pinch action)
+Random initilisation
+WebWorkers
+Rules
 Statistics - e.g. population graph over time
 
 
