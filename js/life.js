@@ -707,52 +707,65 @@ var life = function () {
         }
     }
 
-    function Model() {
-        var that = this;
-        function init() {
-            that.d_grid       = new Grid(config.width, config.height);
-            that.d_generation = 0;
+    /* Model Class */
+    Model.deSerialize = function (data) {
+        var m = JSON.parse(data);
+        m.__proto__ = Model.prototype;
+        m.d_grid.__proto__ = Grid.prototype;
+
+        return m;
+    };
+
+    Model.serialize = function (model) {
+        return JSON.stringify(model);
+    };
+
+    Model.prototype.grid = function () {
+        return this.d_grid;
+    };
+
+    Model.prototype.generation = function () {
+        return this.d_generation;
+    };
+
+    Model.prototype.cell = function (x, y, generation) {
+        if (!(x >= 0 &&
+              y >= 0)) {
+            throw new Error("Model.point: must specify x and y coords");
         }
 
-        init();
+        if (typeof generation !== 'undefined') {
+            this.d_grid[x][y] = generation;
+        }
+        return this.d_grid[x][y] || 0;
+    };
 
-        this.grid = function () {
-            return this.d_grid;
-        };
+    Model.prototype.reset = function () {
+        this.init();
+    };
 
-        this.generation = function () {
-            return this.d_generation;
-        };
+    Model.prototype.tick = function () {
+        this.d_grid = nextGeneration(this.d_grid);
+        ++this.d_generation;
+    };
 
-        this.cell = function (x, y, generation) {
-            if (!(x >= 0 &&
-                  y >= 0)) {
-                throw new Error("Model.point: must specify x and y coords");
-            }
+    Model.prototype.setWidth = function (x) {
+        this.d_grid.setWidth(x);
+    };
 
-            if (typeof generation !== 'undefined') {
-                this.d_grid[x][y] = generation;
-            }
-            return this.d_grid[x][y] || 0;
-        };
+    Model.prototype.setHeight = function (y) {
+        this.d_grid.setHeight(y);
+    };
 
-        this.reset = function () {
-            init();
-        };
+    Model.prototype.init = function () {
+        this.d_grid       = new Grid(config.width, config.height);
+        this.d_generation = 0;
+    };
 
-        this.tick = function () {
-            this.d_grid = nextGeneration(this.d_grid);
-            ++this.d_generation;
-        };
-
-        this.setWidth = function (x) {
-            this.d_grid.setWidth(x);
-        };
-
-        this.setHeight = function (y) {
-            this.d_grid.setHeight(y);
-        };
+    function Model() {
+        this.init();
     }
+
     /* Take the generation number of a cell and the number of neighbours it has.
      * Return true if the cell is to live in the next generation.
      */
