@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cp cache.manifest cache.manifest~
+awk '/^#Version/ {$2 = $2 + 1} {print}' cache.manifest~ > cache.manifest
+
+cp -r --preserve ../life /Media/Other
