@@ -2,6 +2,9 @@
  * variable. */
 var life = function () {
 
+    var log = log4javascript.getLogger();
+    log.addAppender(new log4javascript.BrowserConsoleAppender());
+
     var config = {
         width               : 25,
         height              : 30,

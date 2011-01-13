@@ -17,6 +17,8 @@ css/ui-darkness/images/ui-icons_a83300_256x240.png
 css/ui-darkness/images/ui-icons_cccccc_256x240.png
 css/ui-darkness/images/ui-icons_ffffff_256x240.png
 
+js/log4javascript.js
+
 js/jquery.js
 js/jquery.ui.js
 js/jquery.ui.ipad.js

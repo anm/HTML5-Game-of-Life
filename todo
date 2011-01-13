@@ -57,6 +57,7 @@ autoConfigSize: height seems to be read before rendering complete -
 
 Wonky accordion. :-)
 
+Clicking off right side of grid tries to toggle null cells.
 
 QUnit patches:
       Only show diff if there is a difference!
