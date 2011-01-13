@@ -612,6 +612,9 @@ var life = function () {
             var canvas = self.canvas;
             canvas.setAttribute("width",  self.c_width);
             canvas.setAttribute("height", self.c_height);
+
+            // It seems that resizing the cavas clears it so need to
+            // redraw the background always
             clearCanvas();
         }
 
