@@ -154,8 +154,13 @@ var life = function () {
          * is less precise than cursor. Not doing it on iPod or other
          * mobiles because their screens are so small that bigger
          * cells would make grid too much smaller I think.
+         *
+         * The logic should really be: if touchscreen and resolution greater
+         * than e. but I don't think it's possible to generically test for
+         * touch screen.
          */
-        if(navigator.userAgent && navigator.userAgent.match("iPad")) {
+        if (/iPad/.test(navigator.userAgent)) {
+            log.debug("On iPad");
             config.cell_size += 2;
         }
 
