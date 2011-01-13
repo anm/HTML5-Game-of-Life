@@ -327,8 +327,17 @@ var life = function () {
                         setGenerationColour(generation, colour);
                     });
 
-                $.farbtastic('#colour-picker').setColor(
-                    rgb_to_hex($('.g' + generation).css('background-color')));
+                try {
+                    $.farbtastic('#colour-picker').setColor(
+                        colour_to_hex($('.g' + generation).css('background-color')));
+                } catch (e) {
+                    /* It's not a big deal if this doesn't work. It
+                     * just means that when a swatch is selected the
+                     * colour picker won't change to show the current
+                     * colour. */
+                    log.error("Error setting colour for generation "
+                              + generation + ": " + e);
+                }
             }
 
             for (var i = 1; i <= config.max_generations; ++i) {
@@ -893,19 +902,42 @@ var life = function () {
         // as required.
     }
 
+    /* Attempts to convert a colour in some unknown format to hex
+     * format (#xxxxxx or #xxx).
+     *
+     * This is necessary because browsers return the calculated value
+     * of a colour in various different formats. e.g. Firefox gives
+     * rgb and Opera give hex. I read IE can even give colour names
+     * but I'm not going to try and deal with that for the moment at
+     * least. */
+    function colour_to_hex(string) {
+        var hex = /#(?:[0-9a-fA-F]{3}){1,2}/.exec(string);
+        if (hex && hex.length == 1) {
+            return hex[0];
+        }
+
+        if (/rgb\((\d{0,3}), (\d{0,3}), (\d{0,3})\)/.test(string)) {
+            return rgb_to_hex(string);
+        }
+
+        throw new Error("colour_to_hex: failed to match hex or rgb. "
+                        + "It's probably a named colour which I can't deal "
+                        + "with. Given string: \"" + string + '"');
+    }
+
     /* Convert string of form "rgb(r, g, b)", as returned by css methods,
      to #xxxxxx formx */
     function rgb_to_hex(string) {
         var regex = /^rgb\((\d{0,3}), (\d{0,3}), (\d{0,3})\)$/;
-        var caps  = regex.exec(string);
-        if (!caps || caps.length != 4) {
+        var captures  = regex.exec(string);
+        if (!captures || captures.length != 4) {
             throw new Error(
                 "rgb_to_hex: string did not match expected pattern");
         }
 
         var hex = "#";
         for (var i = 1; i < 4; ++i) {
-            var s = Number(caps[i]).toString(16);
+            var s = Number(captures[i]).toString(16);
             if (s.length == 1) {
                 s = '0' + s;
             }
