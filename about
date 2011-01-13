@@ -1,0 +1,71 @@
+This is an implementation of Conway's Game of Life, a cellular
+automaton, written in JavaScript. It would not be hard to add other
+rule sets so it can be used to run other automata. It's my platform
+for learning and playing with some web technologies. It is optimised
+for Apple's iOS devices (iPod, iPhone, iPad) and makes use of some of
+the new features of HTML 5 if they are available.
+
+The HTML 5 Canvas API allows the drawing of raster graphics. This is
+used to draw the grid. If the browser does not support canvas then it
+falls back to using a table with the background of each cell coloured
+appropriately.
+
+Web Workers are another new feature. This API provides a way to run
+tasks in the background, on a separate thread. The API is very simple;
+communication is by message passing only. I thought I could use this
+to speed the program up because it spends around half its time
+calculating the next generation and the other half updating the
+display. I tried putting the update function into a worker thread. I
+have a version of this that mostly works however there is a bug that
+causes it to stall sometimes, particularly when set to run very
+fast. This might be a bug in my code but I have a suspicion that it is
+actually a browser bug. It seems that the browser is dropping
+messages.
+
+I have found Web Workers to be rather hard to work with for other
+reasons. One is that I found updates to the worker code, which rather
+inconveniently must be in a separate file necessitating copying code,
+were not loading. It turns out that the browser (I have tried Firefox
+and Opera) is caching the code. This is apparently an arbitrary
+decision as the server is not sending any headers to causes this. They
+are the same as for all the other scripts which are not cached. I
+found that to force the browser to reload the code I had to explicitly
+load the script URL. This is extremely frustrating and has likely
+wasted many man hours. Anyway, this was taking far too much time so I
+have branched this off so that I can get on with something more
+productive. It's fast enough anyway, the objective was really just to
+play with Web Workers and the conclusion is that they are not fun. I
+hope this gets fixed before this broken behaviour becomes ingrained.
+
+The grid is automatically sized to fill the browser window but there
+is a maximum size. This is to avoid it running very slowly. A better
+solution would be to test the running speed.
+
+I thought that it would look good and be fun to interact with on the
+touchscreen of the iPad so I had a look into what could be done. It
+would work as normal without modification except for one
+thing. Dragging does not work by default so I used a library to map
+touch events to mouse ones. Otherwise the remaining changes are
+enhancements.
+
+The most significant, which is not actually iOS specific although it
+is most useful on mobile devices, is the offline web application
+cache. This allows all application files to be downloaded so the app
+will run without a network connection.
+
+Some iOS specific enhancements are very little work but increase the
+value greatly. I have added a touch icon. In Safari, the user can
+select "Add to Home Screen". In combination with the offline cache, it
+now looks and behaves pretty much the same as a native app. When the
+device is rotated, the grid is resized to fit the new orientation.
+
+I got a bit carried away with the colour settings :-). It is rather
+pretty though and you can draw pictures. In some browsers at least you
+can then right click the canvas and save it as a PNG, so I've actually
+implemented a paint program as an extra feature. You can make the cell
+size small for high-res graphics :-). I'm afraid it doesn't read mail
+yet.
+
+jQuery and jQuery UI are used for the slider and settings window.
+
+-- Alistair MacLeod (anm), January 2011
