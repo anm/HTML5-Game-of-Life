@@ -20,11 +20,11 @@ var life = function () {
         wraparound          : true,
 
         g_colour            : ['#000', // dead
-                               '#0f0', // g1
-                               '#ff0',
-                               '#f00',
-                               '#0ff',
-                               '#00f',
+                               '#8A9B0F', // g1
+                               '#F8CA00',
+                               '#E97F02',
+                               '#BD1550',
+                               '#490A3D',
                                '#0f0',
                                '#ff0',
                                '#f00',
