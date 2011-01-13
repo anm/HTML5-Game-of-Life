@@ -48,7 +48,12 @@ var life = function () {
     function load() {
         clock = new Clock(tick, config.period);
         model = new Model();
-        view  = new CanvasView(model.grid());
+
+        if (document.createElement('canvas').getContext) {
+            view  = new CanvasView(model.grid());
+        } else {
+            view  = new TableView(model.grid());
+        }
 
         view.display();
 
