@@ -628,7 +628,6 @@ var life = function () {
 
             makeCanvas();
             setCanvasSize();
-            clearCanvas();
 
             self.displayed_grid = grid.copy();
             drawGrid(true);
