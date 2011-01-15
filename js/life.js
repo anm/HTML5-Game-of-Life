@@ -231,12 +231,12 @@ var life = function () {
             var cell = getCellAtEventPosition(event);
 
             // If moved outside grid, stop drawing
-            if (cell == null) {
+            if (cell === null) {
                 gridMouseUp();
                 return false;
             }
 
-            if (cell.toString() != life.drawing.incell.toString()) {
+            if (cell.toString() !== life.drawing.incell.toString()) {
                 // Pointer moved into another cell
                 life.drawing.incell = cell;
 
@@ -354,7 +354,8 @@ var life = function () {
                 }
             }
 
-            for (var i = 1; i <= config.max_generations; ++i) {
+            var i;
+            for (i = 1; i <= config.max_generations; ++i) {
                 // Create style tag for custom colour
                 $('head').append('<style id="g' + i + '" type="text/css"></style>');
 
@@ -374,10 +375,11 @@ var life = function () {
             bind_selector_to_generation(1);
 
             function set_swatch_visibility() {
-                for (var i = 1; i <= config.track_n_generations; ++i) {
+                var i;
+                for (i = 1; i <= config.track_n_generations; ++i) {
                     $('#colour-and-label-' + i).css('visibility', 'visible');
                 }
-                for (var i = config.track_n_generations + 1; i <= config.max_generations; ++i) {
+                for (i = config.track_n_generations + 1; i <= config.max_generations; ++i) {
                     $('#colour-and-label-' + i).css('visibility', 'hidden');
                 }
             }
@@ -467,9 +469,9 @@ var life = function () {
         var self = this;
         this.d_grid       = grid;
 
-        // A cache of the currently displayed grid
-        // Used to optimise drawing by only drawing what has changed
-        this.displayed_grid;
+        // this.displayed_grid is a cache of the currently displayed
+        // grid. It's used to optimise drawing by only drawing what has
+        // changed.
 
         this.cellSize = cellSize || config.cell_size || 20;
 
@@ -498,10 +500,11 @@ var life = function () {
             var tbl     = document.createElement("table");
             var tblBody = document.createElement("tbody");
 
-            for (var y = 0; y < grid.height; y++) {
-                var row = document.createElement("tr");
-                for (var x = 0; x < grid.width; ++x) {
-                    var cell = document.createElement("td");
+            var y, row, x, cell;
+            for (y = 0; y < grid.height; y++) {
+                row = document.createElement("tr");
+                for (x = 0; x < grid.width; ++x) {
+                    cell = document.createElement("td");
 
                     if (grid[x][y]) {
                         cell.className = "live " + "g" + grid[x][y];
@@ -526,18 +529,19 @@ var life = function () {
             var table = document.getElementById("1");
             var grid_tbody = table.getElementsByTagName("tbody")[0];
 
-            if (this.d_grid.size() != this.displayed_grid.size()) {
+            if (this.d_grid.size() !== this.displayed_grid.size()) {
                 // Grid size has changed. Redraw table.
                 table.parentNode.replaceChild(make_table('1', this.d_grid), table);
                 this.displayed_grid = this.d_grid.copy();
             }
             else {
                 // Grid size the same. Do an incremental update.
-                for (var x = 0; x < this.d_grid.width; x++) {
-                    for (var y = 0; y < this.d_grid.height; y++) {
+                var x, y;
+                for (x = 0; x < this.d_grid.width; x++) {
+                    for (y = 0; y < this.d_grid.height; y++) {
 
                         // If there is a difference from current display, update
-                        if ((this.d_grid[x][y]) != (this.displayed_grid[x][y])) {
+                        if ((this.d_grid[x][y]) !== (this.displayed_grid[x][y])) {
                             // Update displayed_grid cache.
                             this.displayed_grid[x][y] = this.d_grid[x][y];
                             if (this.d_grid[x][y]) {
@@ -599,7 +603,7 @@ var life = function () {
 
             for (x = 0; x < self.d_grid.width; ++x) {
                 for (y = 0; y < self.d_grid.height; ++y) {
-                    if (full || (self.d_grid[x][y]) != (self.displayed_grid[x][y])) {
+                    if (full || (self.d_grid[x][y]) !== (self.displayed_grid[x][y])) {
                         // Update displayed_grid cache.
                         self.displayed_grid[x][y] = self.d_grid[x][y];
 
@@ -652,7 +656,7 @@ var life = function () {
         };
 
         self.refreshGrid = function () {
-            if (self.displayed_grid.size() != self.d_grid.size()) {
+            if (self.displayed_grid.size() !== self.d_grid.size()) {
                 self.displayed_grid = self.d_grid.copy();
                 setCanvasSize();
                 drawGrid(true);
@@ -677,11 +681,12 @@ var life = function () {
     /* ************************* Model *********************** */
 
     /* Grid Class */
-    Grid.prototype = new Array(); // Inherit from Array
+    Grid.prototype = []; // Inherit from Array
     Grid.prototype.constructor = Grid; // Set the "class" back to Grid
 
     Grid.prototype.copy = function () {
         var n = new Grid(this.width, this.height);
+        var x, y;
         for (x = 0; x < this.width; ++x) {
             for (y = 0; y < this.height; ++y) {
                 n[x][y] = this[x][y];
@@ -701,7 +706,8 @@ var life = function () {
         }
         if (x > this.width) {
             // Grow
-            for (var i = this.width; i < x; ++i) {
+            var i;
+            for (i = this.width; i < x; ++i) {
                 this[i] = new Array(this.height);
             }
         }
@@ -711,7 +717,8 @@ var life = function () {
 
     Grid.prototype.setHeight = function (y) {
         if (y < this.height) {
-            for (var i = 0; i < this.width; ++i) {
+            var i;
+            for (i = 0; i < this.width; ++i) {
                 this[i].length = y;
             }
         }
@@ -730,7 +737,8 @@ var life = function () {
         this.height = height;
 
         this.length = width;
-        for (var x = 0; x < width; ++x) {
+        var x;
+        for (x = 0; x < width; ++x) {
             this[x] = new Array(height);
         }
     }
@@ -816,14 +824,14 @@ var life = function () {
      */
     function area_sum(grid, point_x, point_y) {
         var sum = 0;
-        var row;
-        var column;
+        var row, column;
+        var nrow, ncolumn;
 
         // The three cells in the rows above and below the given cell
         for (row = point_y - 1; row <= point_y + 1; row = row + 2) {
             for (column = point_x - 1; column <= (point_x + 1); column++) {
-                var nrow    = row;
-                var ncolumn = column;
+                nrow    = row;
+                ncolumn = column;
 
                 if (config.wraparound) {
                     if (row < 0) {
@@ -856,7 +864,7 @@ var life = function () {
         // The two cells to either side of the given cell
         row = point_y;
         for (column = point_x - 1; column <= (point_x + 1); column += 2) {
-            var ncolumn = column;
+            ncolumn = column;
             if (config.wraparound) {
                 if (ncolumn < 0) {
                     ncolumn = grid.width - 1;
@@ -883,11 +891,12 @@ var life = function () {
     function nextGeneration(grid) {
         var ng = new Grid(grid.width, grid.height);
 
-        for (var y = 0; y < grid.height; y++) {
-            for (var x = 0; x < grid.width; x++) {
-                var sum = area_sum(grid, x, y);
+        var y, x, sum, prev;
+        for (y = 0; y < grid.height; y++) {
+            for (x = 0; x < grid.width; x++) {
+                sum = area_sum(grid, x, y);
 
-                var prev = grid[x][y] || 0;
+                prev = grid[x][y] || 0;
                 if (live_p(prev, sum)) {
                     // Add one to the survival time but stop at a max
                     // limit to avoid rollover.
@@ -952,8 +961,9 @@ var life = function () {
         }
 
         var hex = "#";
-        for (var i = 1; i < 4; ++i) {
-            var s = Number(captures[i]).toString(16);
+        var i, s;
+        for (i = 1; i < 4; ++i) {
+            s = Number(captures[i]).toString(16);
             if (s.length == 1) {
                 s = '0' + s;
             }
