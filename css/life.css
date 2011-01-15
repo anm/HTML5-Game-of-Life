@@ -56,11 +56,6 @@ body {
     font-size: 120%;
 }
 
-#panels > div {
-    width: 330px;
-    height: 360px;
-}
-
 #no-of-colours-slider {
     margin: 10px;
 }

@@ -10,7 +10,6 @@ Features
 ========
 
 Config - UI
-       Table or Canvas
        Save / Load Games
        Rules
 
@@ -37,9 +36,21 @@ Bigger settings link, possibly button.
 Bigger close button.
 Bigger checkbox.
 
+Pre-release:
+Get the tests sorted out.
+Lint.
+
 Productify for release
-Save Config
-Save state between reloads
+           - Copyright
+           - Check licences
+           - Licence myself
+           - Analytics
+           - Social sharing stuff
+           - SEO
+           - Deployment compilation / minification
+           - Consider using git modules
+           
+iOS Splash screen
 Import / export grids
 Pattern Library
 Zoom (use pinch action)
@@ -56,8 +67,6 @@ autoConfigSize: height seems to be read before rendering complete -
                 button text size bigger moved it down more.
 
 Wonky accordion. :-)
-
-Clicking off right side of grid tries to toggle null cells.
 
 QUnit patches:
       Only show diff if there is a difference!

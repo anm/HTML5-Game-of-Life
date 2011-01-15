@@ -351,8 +351,21 @@ var life = function () {
                                       });
 
 
-            $("#panels").dialog({autoOpen: false, width: 450,
-                                open: function () {$("#panels").accordion(); }});
+
+            /* I found by experiment that I could not set the sizes of
+             * components with these UI elements applied using CSS
+             * because the javascript mucks around with
+             * them. Therefore it seems I need to set things up in
+             * here. */
+            function onDialogOpen () {
+                $('#panels > div, #panels').css('overflow', 'hidden');
+                $('#colour-panel').css('height', '350px');
+                $('.ui-dialog').css('width', '380px');
+                $('.ui-accordion').css('padding', '0');
+                $('.ui-dialog').css('padding', '0');
+            }
+
+            $("#panels").accordion().dialog({autoOpen: false, open: onDialogOpen});
 
             $("#show-settings").click(function () {
                                           if ($("#panels").dialog('isOpen')) {
