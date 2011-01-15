@@ -619,6 +619,11 @@ var life = function () {
             self.canvas = canvas.get(0);
         }
 
+        function clearCanvas () {
+            self.draw.fillStyle = border_colour;
+            self.draw.fillRect(0, 0, self.c_width, self.c_height);
+        }
+
         function setCanvasSize () {
             self.c_width  = border_width + self.d_grid.width  * (self.cellSize + border_width);
             self.c_height = border_width + self.d_grid.height * (self.cellSize + border_width);
@@ -629,11 +634,6 @@ var life = function () {
             // It seems that resizing the cavas clears it so need to
             // redraw the background always
             clearCanvas();
-        }
-
-        function clearCanvas () {
-            self.draw.fillStyle = border_colour;
-            self.draw.fillRect(0, 0, self.c_width, self.c_height);
         }
 
         self.display = function () {
@@ -808,12 +808,12 @@ var life = function () {
     function live_p(generation, count) {
         if (generation) {
             // If alive
-            if (count == 2 || count == 3) {
+            if (count === 2 || count === 3) {
                 // Stay alive
                 return true;
             }
         } else {
-            if (count == 3) {
+            if (count === 3) {
                 return true;
             }
         }
@@ -837,19 +837,19 @@ var life = function () {
                     if (row < 0) {
                         nrow = grid.height - 1;
                     }
-                    else if (row == grid.height) {
+                    else if (row === grid.height) {
                         nrow = 0;
                     }
 
                     if (column < 0) {
                         ncolumn = grid.width - 1;
                     }
-                    else if (column == grid.width) {
+                    else if (column === grid.width) {
                         ncolumn = 0;
                     }
                 } else {
                     if( row < 0        || column < 0 ||
-                        row == grid.height || column == grid.width) {
+                        row === grid.height || column === grid.width) {
                         // Off the edge
                         continue;
                     }
@@ -868,11 +868,11 @@ var life = function () {
             if (config.wraparound) {
                 if (ncolumn < 0) {
                     ncolumn = grid.width - 1;
-                } else if (ncolumn == grid.width) {
+                } else if (ncolumn === grid.width) {
                     ncolumn = 0;
                 }
             } else {
-                if (column < 0 || column == grid.width) {
+                if (column < 0 || column === grid.width) {
                     continue;
                 }
             }
@@ -937,7 +937,7 @@ var life = function () {
      * least. */
     function colour_to_hex(string) {
         var hex = /#(?:[0-9a-fA-F]{3}){1,2}/.exec(string);
-        if (hex && hex.length == 1) {
+        if (hex && hex.length === 1) {
             return hex[0];
         }
 
@@ -964,7 +964,7 @@ var life = function () {
         var i, s;
         for (i = 1; i < 4; ++i) {
             s = Number(captures[i]).toString(16);
-            if (s.length == 1) {
+            if (s.length === 1) {
                 s = '0' + s;
             }
             hex += s;
@@ -1017,7 +1017,7 @@ var life = function () {
         };
 
         this.stop = function () {
-            if (!(this.timer === null)) {
+            if (this.timer !== null) {
                 clearTimeout(this.timer);
                 this.timer = null;
             }
