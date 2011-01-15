@@ -744,13 +744,70 @@ var life = function () {
     }
 
     /* Model Class */
-    Model.deSerialize = function (data) {
-        var m = JSON.parse(data);
-        m.__proto__ = Model.prototype;
-        m.d_grid.__proto__ = Grid.prototype;
 
-        return m;
-    };
+    /* Check whether the non-standard __proto__ facility is available.
+     * Return true if so, false otherwise.
+     */
+    function protoSupported() {
+        function Test(){}
+        Test.prototype = "aoeu";
+        var test = new Test();
+        if (test.__proto__ = "aoeu") {
+            // Read OK
+            log.debug("__proto__ read OK");
+        } else {
+            log.debug("__proto__ read NOT OK");
+            return false;
+        }
+
+        var test2 = new Test();
+        test2.__proto__ = [];
+        if (test2 instanceof Array) {
+            // Write OK
+            log.debug("__proto__ write OK");
+        } else {
+            log.debug("__proto__ write NOT OK");
+            return false;
+        }
+        return true;
+    }
+
+    /* If there is __proto__ support, reconstituting the object is
+    * easy.  Otherwise the much slower and messier method of copying
+    * over all properties to a new object will be used.
+    */
+    if (protoSupported()) {
+        Model.deSerialize = function (data) {
+            var m = JSON.parse(data);
+            m.__proto__ = Model.prototype;
+            m.d_grid.__proto__ = Grid.prototype;
+
+            return m;
+        };
+    } else {
+        Model.deSerialize = function (data) {
+            log.debug("Model using object reconstitution fallback.");
+            var d = JSON.parse(data);
+            log.debug(d);
+            var m = new Model();
+            m.d_grid = new Grid(d.d_grid.width, d.d_grid.height);
+
+            for (p in d.d_grid) {
+                // Should preferably test and only copy needed stuff
+                m.d_grid[p] = d.d_grid[p];
+            }
+            for (p in d) {
+                if (p !== 'd_grid') {
+                    m[p] = d[p];
+                }
+            }
+
+            m.__proto__ = Model.prototype;
+            m.d_grid.__proto__ = Grid.prototype;
+
+            return m;
+        };
+    }
 
     Model.serialize = function (model) {
         return JSON.stringify(model);
