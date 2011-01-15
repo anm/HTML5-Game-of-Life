@@ -10,6 +10,12 @@ used to draw the grid. If the browser does not support canvas then it
 falls back to using a table with the background of each cell coloured
 appropriately.
 
+I use the new localStorage API where available to save state between
+page visits. It is a simple key value interface which takes string
+values. The configuration is stringified with JSON. The grid takes
+rather more effort as it is an object with functios, not just plain
+data.
+
 Web Workers are another new feature. This API provides a way to run
 tasks in the background, on a separate thread. The API is very simple;
 communication is by message passing only. I thought I could use this
