@@ -235,12 +235,18 @@ var life = function () {
 
         /* Drawing Functions */
         function gridMouseDown (event) {
+            var cell = getCellAtEventPosition(event);
+
+            if (cell === null) {
+                // In the grid container div but not in the grid
+                // Do nothing
+                return true;
+            }
             // Start Drawing
 
             // Bind to document to capture moving outside the grid
             $(document).bind('mousemove', gridMouseMove);
 
-            var cell = getCellAtEventPosition(event);
             life.drawing.incell = cell;
 
             if (model.cell(cell.x, cell.y)) {
@@ -356,8 +362,8 @@ var life = function () {
                                           }
                                       });
 
-            $('#grid').bind('mousedown', gridMouseDown);
-            $('#grid').bind('mouseup'  , gridMouseUp);
+            $('#grid-div').bind('mousedown', gridMouseDown);
+            $('#grid-div').bind('mouseup'  , gridMouseUp);
 
             /**** Colours ****/
 
@@ -449,8 +455,8 @@ var life = function () {
             // Subtract one cell to give some border (and because it
             // was too big for some unknown reason)
 
-            var left = $("#grid").get(0).offsetLeft;
-            var top  = $("#grid").get(0).offsetTop;
+            var left = $("#grid-div").get(0).offsetLeft;
+            var top  = $("#grid-div").get(0).offsetTop;
 
             var width = Math.floor(($(window).width() - left) /
                                    (config.cell_size + config.border_width)) - 1;
@@ -509,12 +515,12 @@ var life = function () {
 
         this.display = function () {
             TableView.prototype.display();
-            var table = make_table('1', this.d_grid);
+            var table = make_table('grid', this.d_grid);
 
-            $('head').append('<style type="text/css">#grid table {border-color: '
+            $('head').append('<style type="text/css">#grid-div table {border-color: '
                              + config.border_colour + ';}</style>');
 
-            $("#grid").append(table);
+            $("#grid-div").append(table);
             this.displayed_grid = this.d_grid.copy();
         };
 
@@ -646,7 +652,7 @@ var life = function () {
         }
 
         function makeCanvas () {
-            var canvas = $('<canvas id="grid-canvas">');
+            var canvas = $('<canvas id="grid">');
             self.draw = canvas.get(0).getContext('2d');
             self.canvas = canvas.get(0);
         }
@@ -677,7 +683,7 @@ var life = function () {
             self.displayed_grid = grid.copy();
             drawGrid(true);
 
-            $("#grid").append(self.canvas);
+            $("#grid-div").append(self.canvas);
         };
 
         self.setCellSize = function (px) {
