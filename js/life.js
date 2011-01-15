@@ -45,9 +45,32 @@ var life = function () {
 
     /* *********************** Controller ******************* */
 
+    function haveLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+
     function load() {
         clock = new Clock(tick, config.period);
-        model = new Model();
+
+        if (haveLocalStorage()) {
+            var model_string = localStorage.getItem("model");
+            if (model_string !== null) {
+                model = Model.deSerialize(model_string);
+            } else {
+                model = new Model();
+            }
+
+            var config_string = localStorage.getItem("config");
+            if (config_string !== null) {
+                config = JSON.parse(config_string);
+            }
+        } else {
+            model = new Model();
+        }
 
         if (document.createElement('canvas').getContext) {
             view  = new CanvasView(model.grid());
@@ -58,6 +81,15 @@ var life = function () {
         view.display();
 
         //    run_qunit_tests();
+    }
+
+    function saveState() {
+        localStorage.setItem("model", Model.serialize(model));
+        localStorage.setItem("config", JSON.stringify(config));
+    }
+
+    if (haveLocalStorage()) {
+        window.addEventListener('unload', saveState, false);
     }
 
     function reset() {
