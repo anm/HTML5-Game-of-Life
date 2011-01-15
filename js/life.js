@@ -169,6 +169,12 @@ var life = function () {
             config.cell_size += 2;
         }
 
+        function Cell(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+        Cell.prototype.toString = function () {return '(' + this.x + ',' + this.y + ')';};
+
         /* Returns the cell index as an object with fields x and y.
          * Returns null if the position is outside the grid.
          * toString returns (x,y)
@@ -192,9 +198,7 @@ var life = function () {
                 return null;
             }
 
-            var cell = {x: x, y: y};
-            cell.toString = function () {return '(' + x + ',' + y + ')'};
-            return cell;
+            return new Cell(x, y);
         }
 
         /* Drawing Functions */
