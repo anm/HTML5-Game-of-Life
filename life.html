@@ -42,11 +42,11 @@ href="css/life.css" rel="stylesheet" />
     <input type="button" id="reset" value="Reset" />
     <a id="show-settings" href="#">Settings</a>
   </div>
-  <div id="speed-slider"></div>
+  <div id="speed"><span id="speed-label">Speed:</span> <div id="speed-slider"></div></div>
 </div>
 
 <div id="status-display">
-  <span id="speed-display">Update: <span id="speed"></span>ms</span>
+  <span id="speed-display">Update Interval: <span id="speed-val"></span></span>
   <span id="generation-display">Generation: <span id="generation"></span></span>
   <span id="status">Stopped</span>
 </div>
@@ -56,14 +56,14 @@ href="css/life.css" rel="stylesheet" />
 <div id="panels" title="Settings">
   <h3><a href="#">Colour</a></h3>
   <div id="colour-panel">
-    How many generations do you want to colour?
+    How many generations do you want to colour? <span class="small">(slide to change)</span>
     <div id="no-of-colours-slider"></div>
     <div id="colour-pickers">
       <table>
       </table>
     </div>
-    Click swatch to change
     <div id="colour-picker"></div>
+    <div id="swatch-tip">Click swatch to change colour</div>
   </div>
 
   <h3><a href="#">Grid</a></h3>

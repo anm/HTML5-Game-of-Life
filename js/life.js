@@ -293,7 +293,7 @@ var life = function () {
             $("#stop").click(life.stop);
             $("#reset").click(life.reset);
 
-            $("#speed").text(config.period);
+            $("#speed-val").text(config.period + "ms");
 
             $('#width-display').text(config.width);
             $('#height-display').text(config.height);
@@ -311,7 +311,7 @@ var life = function () {
                     max: 1000,
                     slide: function (event, ui) {
                         config.period = ui.value;
-                        $("#speed").text(ui.value);
+                        $("#speed-val").text(ui.value + "ms");
                         clock.setPeriod(ui.value);
                     }
                 });

@@ -43,8 +43,8 @@ Lint.
 Productify for release
            - Copyright
            - Check licences
-           - Licence myself
-           - Analytics
+           - Licence myself: MIT if poss. GPL in mean time.
+           - Analytics: Need privacy policy and google notice.
            - Social sharing stuff
            - SEO
            - Deployment compilation / minification
@@ -62,11 +62,10 @@ Statistics - e.g. population graph over time
 
 Bugs
 ====
+Resume draw on mouse in after a mouse out while drawing.
 
 autoConfigSize: height seems to be read before rendering complete -
                 button text size bigger moved it down more.
-
-Wonky accordion. :-)
 
 QUnit patches:
       Only show diff if there is a difference!
