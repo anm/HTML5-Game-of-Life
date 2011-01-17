@@ -21,6 +21,16 @@ body {
     margin-bottom: 5px;
 }
 
+/* 
+* An attempt to make the checkbox larger. This seems to be known
+* difficult and have inconsistent results. Will leave it for now.
+
+input[type="checkbox"] {
+    width: 2em;
+    height: 2em;
+}
+*/
+
 #buttons * {
     font-size: 120%;
 }
