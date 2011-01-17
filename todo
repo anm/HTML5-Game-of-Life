@@ -15,11 +15,8 @@ Config - UI
 
 Usability study notes
 ---------------------
-Label sliders
 Make slide action more obvious - arrow on slider, like bidirectional unlock?
-Remove min highlight on slider.
 Restrict slider end movement or at least add sufficient margin to allow for it
-Relabel / explain update speed.
 Attempted to drag resize grid.
 Explain generation colours, possibly rename. Generation could mean
 child is next colour, parent stays same.
@@ -31,10 +28,8 @@ Turn into a game.
 
 Get working on iOS again
     - Sizing for iPod: Dynamically size settings dialog.
-Rename tick to step?
-Bigger settings link, possibly button.
 Bigger close button.
-Bigger checkbox.
+Bigger checkbox. - Difficult, first attempt added though.
 
 Pre-release:
 Get the tests sorted out.
