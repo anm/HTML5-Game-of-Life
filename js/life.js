@@ -80,7 +80,7 @@ var life = function () {
 
         view.display();
 
-        //    run_qunit_tests();
+//        run_qunit_tests();
     }
 
     function saveState() {
@@ -889,7 +889,7 @@ var life = function () {
     };
 
     Model.prototype.tick = function () {
-        this.d_grid = nextGeneration(this.d_grid);
+        this.d_grid = this.nextGeneration();
         ++this.d_generation;
     };
 
@@ -906,14 +906,33 @@ var life = function () {
         this.d_generation = 0;
     };
 
-    function Model() {
-        this.init();
-    }
+    /* Takes a Grid.
+     * Returns a Grid for the next generation of the supplied Grid.
+     */
+
+    Model.prototype.nextGeneration = function() {
+        var ng = new Grid(this.d_grid.width, this.d_grid.height);
+
+        var y, x, sum, prev;
+        for (y = 0; y < ng.height; y++) {
+            for (x = 0; x < ng.width; x++) {
+                sum = this.area_sum(x, y);
+
+                prev = this.d_grid[x][y] || 0;
+                if (this.live_p(prev, sum)) {
+                    // Add one to the survival time but stop at a max
+                    // limit to avoid rollover.
+                    ng[x][y] = prev < config.track_n_generations ? prev + 1 : prev;
+                }
+            }
+        }
+        return ng;
+    };
 
     /* Take the generation number of a cell and the number of neighbours it has.
      * Return true if the cell is to live in the next generation.
      */
-    function live_p(generation, count) {
+    Model.prototype.live_p = function (generation, count) {
         if (generation) {
             // If alive
             if (count === 2 || count === 3) {
@@ -926,12 +945,13 @@ var life = function () {
             }
         }
         return false;
-    }
+    };
 
     /* Return the number of living cells that surround the given point
      */
-    function area_sum(grid, point_x, point_y) {
+    Model.prototype.area_sum = function (point_x, point_y) {
         var sum = 0;
+        var grid = this.d_grid; // for convenience
         var row, column;
         var nrow, ncolumn;
 
@@ -990,34 +1010,11 @@ var life = function () {
             }
         }
         return sum;
+    };
+
+    function Model() {
+        this.init();
     }
-
-
-    /* Takes a Grid.
-     * Returns a Grid for the next generation of the supplied Grid.
-     */
-    function nextGeneration(grid) {
-        var ng = new Grid(grid.width, grid.height);
-
-        var y, x, sum, prev;
-        for (y = 0; y < grid.height; y++) {
-            for (x = 0; x < grid.width; x++) {
-                sum = area_sum(grid, x, y);
-
-                prev = grid[x][y] || 0;
-                if (live_p(prev, sum)) {
-                    // Add one to the survival time but stop at a max
-                    // limit to avoid rollover.
-                    ng[x][y] = prev < config.track_n_generations ? prev + 1 : prev;
-                }
-            }
-        }
-        return ng;
-    }
-
-
-
-
 
     /* ****************   AUXILLIARY FUNCTIONS ************** */
 
@@ -1141,6 +1138,14 @@ var life = function () {
         stop: stop,
         toggle_cell: toggle_cell,
 
+        // For testing
+        Grid: Grid,
+        Model: Model,
+        TableView: TableView,
+        CanvasView: CanvasView,
+        view: view,
+        model: model,
+        clock: clock,
         config: config,
         drawing: drawing
     };
