@@ -9,10 +9,6 @@ Process
 Features
 ========
 
-Config - UI
-       Save / Load Games
-       Rules
-
 Usability study notes
 ---------------------
 Make slide action more obvious - arrow on slider, like bidirectional unlock?
@@ -23,8 +19,6 @@ child is next colour, parent stays same.
 Add a reference point / cursor?
 
 Turn into a game.
-
-
 
 Get working on iOS again
     - Sizing for iPod: Dynamically size settings dialog.
@@ -45,19 +39,19 @@ Productify for release
            - Deployment compilation / minification
            - Consider using git modules
            
+Save / Load Games
+Change rules
 iOS Splash screen
 Import / export grids
 Pattern Library
 Zoom (use pinch action)
 Random initilisation
 WebWorkers
-Rules
 Statistics - e.g. population graph over time
-
 
 Bugs
 ====
-Resume draw on mouse in after a mouse out while drawing.
+Resume draw on mouse in after a mouse out while drawing. - Started in new branch.
 
 autoConfigSize: height seems to be read before rendering complete -
                 button text size bigger moved it down more.
