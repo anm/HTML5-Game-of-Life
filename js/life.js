@@ -360,7 +360,7 @@ var life = function () {
             function onDialogOpen () {
                 $('#panels > div, #panels').css('overflow', 'hidden');
                 $('#colour-panel').css('height', '350px');
-                $('.ui-dialog').css('width', '380px');
+                $('.ui-dialog').css('width', '400px');
                 $('.ui-accordion').css('padding', '0');
                 $('.ui-dialog').css('padding', '0');
             }
