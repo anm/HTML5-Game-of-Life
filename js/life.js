@@ -577,12 +577,12 @@ var life = function () {
         }
 
         this.refreshGrid = function () {
-            var table = document.getElementById("1");
+            var table = document.getElementById("grid");
             var grid_tbody = table.getElementsByTagName("tbody")[0];
 
             if (this.d_grid.size() !== this.displayed_grid.size()) {
                 // Grid size has changed. Redraw table.
-                table.parentNode.replaceChild(make_table('1', this.d_grid), table);
+                table.parentNode.replaceChild(make_table('grid', this.d_grid), table);
                 this.displayed_grid = this.d_grid.copy();
             }
             else {
@@ -609,7 +609,7 @@ var life = function () {
         };
 
         this.refreshCell = function (x, y) {
-            var table      = document.getElementById("1");
+            var table      = document.getElementById("grid");
             var grid_tbody = table.getElementsByTagName("tbody")[0];
 
             // Update display cache
@@ -1141,13 +1141,17 @@ var life = function () {
         // For testing
         Grid: Grid,
         Model: Model,
+        View: View,
         TableView: TableView,
         CanvasView: CanvasView,
         view: view,
         model: model,
         clock: clock,
         config: config,
-        drawing: drawing
+        drawing: drawing,
+
+        rgb_to_hex: rgb_to_hex,
+        test: run_qunit_tests
     };
 }();
 
