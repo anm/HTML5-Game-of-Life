@@ -1,0 +1,217 @@
+test ("Initialise programme", 5, function() {
+    ok(life.view instanceof life.TableView, "view is TableView");
+    ok(life.model instanceof life.Model, "model is Model");
+    ok(life.clock instanceof life.Clock, "clock is Clock");
+});
+
+test("Edge wraparound off", 3, function() {
+    wraparound = false;
+
+    /*  Box in corner */
+    var g = new life.Grid(10, 10);
+    g[0][0] = 1;
+    g[0][1] = 1;
+    g[1][0] = 1;
+    g[1][1] = 1;
+
+    // The correct new grid. Only change in generation incerment.
+    var ngc = new life.Grid(10, 10);
+    ngc[0][0] = 2;
+    ngc[0][1] = 2;
+    ngc[1][0] = 2;
+    ngc[1][1] = 2;
+
+    var ng = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box in corner preserved " + err);
+
+    /* Box on both joins. */
+    var g = new life.Grid(10, 10);
+    g[0][0] = 1;
+    g[9][0] = 1;
+    g[0][9] = 1;
+    g[9][9] = 1;
+
+    // The correct new grid. All dead.
+    var ngc = new life.Grid(10, 10);
+
+    var ng  = nextGeneration(g);
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Box across both edges died " + err);
+
+    /* Glider in bottom right corner */
+    var g = new life.Grid(10, 10);
+    g[7][9] = 1
+    g[8][9] = 1;
+    g[9][9] = 1;
+    g[9][8] = 1;
+    g[8][7] = 1;
+
+    var ng = nextGeneration(g);
+
+    // The correct new grid
+    var ngc = new life.Grid(10, 10);
+
+    // Glider
+    ngc[8][9] = 2;
+    ngc[9][9] = 2;
+    ngc[9][8] = 2;
+    ngc[7][8] = 1;
+
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Glider in corner ok, parts off edge dissapear " + err);
+});
+
+
+test("Toggle cell on click", 3, function() {
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+
+    var x = 0;
+    var y = 0;
+
+    var cell = grid_tbody.childNodes[y].childNodes[x];
+
+    equals(cell.className, "dead", "Initially dead");
+    simulateClick(cell);
+    equals(cell.className, "live g1", "Live and generation 1 after click");
+    simulateClick(cell);
+    equals(cell.className, "dead", "Dead again after second click");
+});
+
+test("Toggle cell on click, non-square grid", 6, function() {
+    /* Use a non-square grid */
+    grid = new life.Grid(15, 5);
+
+    var table = document.getElementById("1");
+    table.parentNode.replaceChild(make_table("1", grid), table);
+
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+
+    /* Check a point that is outside the square grid of size min(x,y).
+       * This is to catch a bug that occured when rows and columns
+       * were interchanged. */
+
+    var x = 5
+    var y = 4;
+
+    var cell = grid_tbody.childNodes[y].childNodes[x];
+
+    equals(cell.className, "dead", "Initially dead");
+    simulateClick(cell);
+    equals(cell.className, "live g1", "Live and generation 1 after click");
+    simulateClick(cell);
+    equals(cell.className, "dead", "Dead again after second click");
+
+    /* Also test it after a tick */
+    reset(); // In case previous tests left something
+    tick();
+    var table = document.getElementById("1");
+    var grid_tbody = table.getElementsByTagName("tbody")[0];
+    var cell = grid_tbody.childNodes[y].childNodes[x];
+
+    equals(cell.className, "dead", "After tick: Initially dead");
+    simulateClick(cell);
+    equals(cell.className, "live g1", "After tick: Live and generation 1 after click");
+    simulateClick(cell);
+    equals(cell.className, "dead", "After tick: Dead again after second click");
+});
+
+
+test("Reset button", 5, function () {
+    /* Pollute state */
+    prev_grid[0][0] = 1;
+    grid[0][0] = 2;
+    grid[3][3] = 1;
+    display(grid);
+    generation = 2;
+    show_generation();
+
+    /* Reset */
+    simulateClick(document.getElementById("reset"));
+
+    /* Test clean */
+    var clean_grid = new Grid(width, height);
+    var clean_table = make_table(1, clean_grid);
+
+    deepEqual(life.model.d_grid, clean_grid, "grid reset");
+    deepEqual(prev_grid, clean_grid, "prev_grid reset");
+
+    var table = document.getElementById("1");
+    equal(table.innerHTML, clean_table.innerHTML, "table is clean");
+
+    equal(generation, 0, "Generation set to 0");
+    equal(document.getElementById('generation').innerHTML, 0,
+          "generation label is 0");
+});
+
+/* *************** Model ****************** */
+test("Model", 11, function () {
+    var m = new life.Model();
+    ok(m instanceof life.Model, "Type ok");
+    ok(m.grid() instanceof life.Grid, "grid() returns a grid");
+
+    strictEqual(m.generation(), 0, "generation() gives 0");
+
+    strictEqual(m.cell(0, 0), 0, "cell(0,0) gives 0");
+    equal(m.cell(0,0,1), 1, "cell(0,0,1) gives 1");
+    equal(m.cell(0,0), 1, "cell now set");
+    var g = new life.Grid(width, height);
+    g[0][0] = 1;
+    deepEqual(m.grid(), g, "Returned grid corresponds to cell results");
+
+    // Pollute for reset test
+    m.cell(5,5,3);
+    m.reset();
+    strictEqual(m.cell(0,0), 0, "0,0 is 0 after reset");
+    strictEqual(m.cell(5,5), 0, "5,5 is 0 after reset");
+    strictEqual(m.generation(), 0, "Generation 0 after reset");
+    var g = m.grid();
+    var gclean = new life.Grid(width, height);
+    deepEqual(g, gclean, "Returned grid is clean");
+});
+
+test("Test Model.tick() and nextGeneration", 4, function() {
+    wraparound = false;
+    height     = 10;
+    width      = 10;
+
+    var m = new Model();
+    var g = l.grid();
+
+    // Glider
+    g[5][5] = 1;
+    g[6][5] = 1;
+    g[7][5] = 1;
+    g[7][4] = 1;
+    g[6][3] = 1;
+
+    // Point
+    g[8][8] = 10;
+
+    model.tick();
+
+    equal(model.generation(), 1, "Generation 1 after first tick");
+
+    var ng = model.grid();
+
+    ok(ng instanceof Grid, "Returns a Grid");
+    ok(ng !== g, "Result not the same object as argument");
+
+    /* The correct new grid */
+    var ngc = new Grid(10,10);
+
+    // Glider
+    ngc[5][4] = 1;
+    ngc[6][5] = 2;
+    ngc[7][5] = 2;
+    ngc[7][4] = 2;
+    ngc[6][6] = 1;
+
+    // Point
+    // (undefined)
+
+    var err = grid_difference(ng, ngc);
+    ok(!err, "Next generation ok for glider and point " + err);
+});
