@@ -14,7 +14,7 @@ appropriately.
 I use the new localStorage API where available to save state between
 page visits. It is a simple key value interface which takes string
 values. The configuration is stringified with JSON. The grid takes
-rather more effort as it is an object with functios, not just plain
+rather more effort as it is an object with functions, not just plain
 data.
 
 Web Workers are another new feature. This API provides a way to run
@@ -34,7 +34,7 @@ reasons. One is that I found updates to the worker code, which rather
 inconveniently must be in a separate file necessitating copying code,
 were not loading. It turns out that the browser (I have tried Firefox
 and Opera) is caching the code. This is apparently an arbitrary
-decision as the server is not sending any headers to causes this. They
+decision as the server is not sending any headers to cause this. They
 are the same as for all the other scripts which are not cached. I
 found that to force the browser to reload the code I had to explicitly
 load the script URL. This is extremely frustrating and has likely
@@ -66,12 +66,15 @@ select "Add to Home Screen". In combination with the offline cache, it
 now looks and behaves pretty much the same as a native app. When the
 device is rotated, the grid is resized to fit the new orientation.
 
-jQuery and jQuery UI are used for the sliders and settings window.
+jQuery and jQuery UI are used for the sliders and settings window. I
+think the slider implementation is rather poor so I have hacked it to
+fix some bugs. It's still got problems though so probably not worth
+the effort. I should probably look into something else.
 
 I got a bit carried away with the colour settings :-). It is rather
 pretty though and you can draw pictures. In some browsers at least you
 can then right click the canvas and save it as a PNG, so it seems I've
-acidentally implemented a paint program. You can make the cell size
+accidentally implemented a paint program. You can make the cell size
 small for high-res graphics :-). I'm afraid it doesn't read mail yet.
 
 
