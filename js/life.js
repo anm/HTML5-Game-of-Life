@@ -54,8 +54,6 @@ var life = function () {
     }
 
     function load() {
-        clock = new Clock(tick, config.period);
-
         if (haveLocalStorage()) {
             var model_string = localStorage.getItem("model");
             if (model_string !== null) {
@@ -71,6 +69,8 @@ var life = function () {
         } else {
             model = new Model();
         }
+
+        clock = new Clock(tick, config.period);
 
         if (document.createElement('canvas').getContext) {
             view  = new CanvasView(model.grid());
