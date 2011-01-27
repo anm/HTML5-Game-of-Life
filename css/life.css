@@ -4,6 +4,11 @@
     border-style: solid; 
 }*/
 
+noscript {
+    color: red;
+    font-size: x-large;
+}
+
 body {
     background-color: #000;
     color: #eee
