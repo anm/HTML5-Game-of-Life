@@ -539,7 +539,7 @@ var life = function () {
 
         this.setCellSize = function (px) {
             this.cellSize = px;
-            $('#1').get(0).setAttribute("cellpadding", this.cellSize / 2 + "px");
+            $('#grid').get(0).setAttribute("cellpadding", this.cellSize / 2 + "px");
         };
 
         this.updateColours = function () {
