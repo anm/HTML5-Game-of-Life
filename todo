@@ -1,13 +1,17 @@
-Process
+Ongoing
 =======
 
-1. Check working copy clean.
-2. Write tests.
-3. Write code till test pass.
-4. Checkin
+Lint.
 
-Features
-========
+Bugs
+====
+Resume draw on mouse in after a mouse out while drawing. - Started in new branch.
+
+autoConfigSize: height seems to be read before rendering complete -
+                button text size bigger moved it down more.
+
+Improvement
+===========
 
 Usability study notes
 ---------------------
@@ -20,25 +24,19 @@ Add a reference point / cursor?
 
 Turn into a game.
 
-Get working on iOS again
-    - Sizing for iPod: Dynamically size settings dialog.
 Bigger close button.
 Bigger checkbox. - Difficult, first attempt added though.
 
-Pre-release:
-Get the tests sorted out.
-Lint.
+Sizing for iPod: Dynamically size settings dialog.
 
-Productify for release
-           - Copyright
-           - Check licences
-           - Licence myself: MIT if poss. GPL in mean time.
-           - Analytics: Need privacy policy and google notice.
-           - Social sharing stuff
-           - SEO
-           - Deployment compilation / minification
-           - Consider using git modules
-           
+Get the tests sorted out. I have been experimenting with various
+testing frameworks. I was using QUnit but did not like it. Not sorted
+out better system yet. The tests also need refactored so generally
+needs work.
+
+Features
+========
+
 Save / Load Games
 Change rules
 iOS Splash screen
@@ -49,14 +47,8 @@ Random initilisation
 WebWorkers
 Statistics - e.g. population graph over time
 
-Bugs
-====
-Resume draw on mouse in after a mouse out while drawing. - Started in new branch.
 
-autoConfigSize: height seems to be read before rendering complete -
-                button text size bigger moved it down more.
-
-QUnit patches:
+QUnit bugs / enhancements noticed while using it for life:
       Only show diff if there is a difference!
       Option to print arb. data.
       Tap plan output.
