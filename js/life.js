@@ -89,7 +89,12 @@ var life = function () {
     }
 
     if (haveLocalStorage()) {
-        window.addEventListener('unload', saveState, false);
+        // Allow for IE nonsense
+        if (window.addEventListener) {
+            window.addEventListener('unload', saveState, false);
+        } else if (window.attachEvent) {
+            window.attachEvent('unload', saveState);
+        }
     }
 
     function reset() {
